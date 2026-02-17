@@ -271,22 +271,46 @@ h1 {
         const SPREADSHEET_ID = '1ooeTSIOWpKLhJ_3ByNtsHl28kH8c9BBHNMhiqOgfNE4';
         const SHEET_NAME = 'Página1';
         
-        // MAPEAMENTO CORRIGIDO das colunas baseado nos seus dados
+        // MAPEAMENTO COMPLETO de todas as colunas baseado no seu cabeçalho
         const COLUNAS = {
-            // Sócio Demográficos
-            RACA: 0,        // Coluna A - ÍNDICE 0 (primeira coluna)
-            SEXO: 1,        // Coluna B - ÍNDICE 1 (segunda coluna)
+            // Sócio Demográficos (índices 0-1)
+            RACA: 0,        // Coluna A
+            SEXO: 1,        // Coluna B
             
-            // Doenças Crônicas
-            DM: 2,          // Coluna C - ÍNDICE 2
-            // Pula coluna D (Created) - índice 3
-            HAS: 4,         // Coluna E - ÍNDICE 4
+            // Doenças Crônicas (índices 2-13)
+            DM: 2,              // Coluna C
+            // Pula índice 3 (Created)
+            HAS: 4,             // Coluna E
+            PESO_ADEQUADO: 5,   // Coluna F
+            ACIMA_PESO: 6,      // Coluna G
+            AVC: 7,             // Coluna H
+            CARDIACA: 8,        // Coluna I
+            RINS: 9,            // Coluna J
+            RESPIRATORIA: 10,   // Coluna K
+            CANCER: 11,         // Coluna L
+            PROMOCAO_CRONICAS: 12, // Coluna M
             
-            // Nutrição
-            PESO_ADEQUADO: 5,  // Coluna F - ÍNDICE 5
-            ACIMA_PESO: 6,     // Coluna G - ÍNDICE 6
+            // Nutrição (índices 13-16)
+            IMC_REGISTRADO: 13,    // Coluna N
+            BAIXO_PESO: 14,        // Coluna O
+            PROMOCAO_NUTRICAO: 15,  // Coluna P
             
-            // As demais colunas você pode adicionar conforme aparecerem
+            // Puericultura (índices 16-18)
+            CONSULTAS_DIA: 16,          // Coluna Q
+            VACINACAO_ATUALIZADA: 17,    // Coluna R
+            PROMOCAO_PUERICULTURA: 18,   // Coluna S
+            
+            // Hebicultura (índices 19-21)
+            ENCAMINHAMENTOS: 19,         // Coluna T
+            GRUPO_SEXUAL: 20,            // Coluna U
+            PROMOCAO_HEBICULTURA: 21,    // Coluna V
+            
+            // Saúde Mental (índices 22-26)
+            ALCOOL: 22,          // Coluna W
+            CIGARRO: 23,         // Coluna X
+            DROGAS: 24,          // Coluna Y
+            OUTRAS: 25,          // Coluna Z
+            PROMOCAO_SAUDE_MENTAL: 26   // Coluna AA
         };
 
         let dados = [];
@@ -303,9 +327,8 @@ h1 {
                 if (result.values) {
                     const rows = result.values;
                     if (rows.length > 1) {
-                        // Mostrar primeiras linhas no console para debug
                         console.log('Cabeçalho:', rows[0]);
-                        console.log('Primeira linha de dados:', rows[1]);
+                        console.log('Total de linhas:', rows.length - 1);
                         
                         processarDados(rows.slice(1));
                     } else {
@@ -330,14 +353,55 @@ h1 {
             const total = dados.length;
             document.querySelector('#totalPatients span').textContent = total;
 
-            // Calcular estatísticas com os índices corrigidos
+            // Calcular estatísticas COMPLETAS
             const stats = {
+                // Sócio Demográficos
                 raca: contarColuna(COLUNAS.RACA),
                 sexo: contarColuna(COLUNAS.SEXO),
-                dm: contarValor(COLUNAS.DM, 'Sim'),
-                has: contarValor(COLUNAS.HAS, 'Sim'),
-                peso_adequado: contarValor(COLUNAS.PESO_ADEQUADO, 'Sim'),
-                acima_peso: contarValor(COLUNAS.ACIMA_PESO, 'Sim')
+                
+                // Doenças Crônicas
+                cronicas: {
+                    dm: contarSim(COLUNAS.DM),
+                    has: contarSim(COLUNAS.HAS),
+                    avc: contarSim(COLUNAS.AVC),
+                    cardiaca: contarSim(COLUNAS.CARDIACA),
+                    rins: contarSim(COLUNAS.RINS),
+                    respiratoria: contarSim(COLUNAS.RESPIRATORIA),
+                    cancer: contarSim(COLUNAS.CANCER),
+                    promocao: contarSim(COLUNAS.PROMOCAO_CRONICAS)
+                },
+                
+                // Nutrição
+                nutricao: {
+                    imc_registrado: contarSim(COLUNAS.IMC_REGISTRADO),
+                    baixo_peso: contarSim(COLUNAS.BAIXO_PESO),
+                    peso_adequado: contarSim(COLUNAS.PESO_ADEQUADO),
+                    acima_peso: contarSim(COLUNAS.ACIMA_PESO),
+                    promocao: contarSim(COLUNAS.PROMOCAO_NUTRICAO)
+                },
+                
+                // Puericultura
+                puericultura: {
+                    consultas_dia: contarSim(COLUNAS.CONSULTAS_DIA),
+                    vacinacao: contarSim(COLUNAS.VACINACAO_ATUALIZADA),
+                    promocao: contarSim(COLUNAS.PROMOCAO_PUERICULTURA)
+                },
+                
+                // Hebicultura
+                hebicultura: {
+                    encaminhamentos: contarSim(COLUNAS.ENCAMINHAMENTOS),
+                    grupo_sexual: contarSim(COLUNAS.GRUPO_SEXUAL),
+                    promocao: contarSim(COLUNAS.PROMOCAO_HEBICULTURA)
+                },
+                
+                // Saúde Mental
+                saudeMental: {
+                    alcool: contarSim(COLUNAS.ALCOOL),
+                    cigarro: contarSim(COLUNAS.CIGARRO),
+                    drogas: contarSim(COLUNAS.DROGAS),
+                    outras: contarSim(COLUNAS.OUTRAS),
+                    promocao: contarSim(COLUNAS.PROMOCAO_SAUDE_MENTAL)
+                }
             };
 
             renderizarResultados(stats, total);
@@ -356,13 +420,19 @@ h1 {
             return contagem;
         }
 
-        function contarValor(colIndex, valorBuscado) {
-            return dados.filter(row => row[colIndex] === valorBuscado).length;
+        function contarSim(colIndex) {
+            return dados.filter(row => row[colIndex] === 'Sim').length;
         }
 
         function renderizarPorcentagem(containerId, items, total) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
+            
+            // Se não há items, mostra mensagem
+            if (items.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #999; padding: 10px;">Nenhum dado registrado</div>';
+                return;
+            }
             
             items.forEach(item => {
                 const div = document.createElement('div');
@@ -383,7 +453,7 @@ h1 {
         }
 
         function renderizarResultados(stats, total) {
-            // Sócio Demográficos - AGORA MOSTRA QUANTIDADE + PORCENTAGEM
+            // Sócio Demográficos
             renderizarPorcentagem('socioDemograficos', [
                 { label: 'Raça Branca', valor: stats.raca['Branca'] || 0 },
                 { label: 'Raça Preta', valor: stats.raca['Preta'] || 0 },
@@ -396,20 +466,47 @@ h1 {
 
             // Doenças Crônicas
             renderizarPorcentagem('doencasCronicas', [
-                { label: 'Diabetes (DM)', valor: stats.dm },
-                { label: 'HAS', valor: stats.has }
+                { label: 'Diabetes (DM)', valor: stats.cronicas.dm },
+                { label: 'HAS', valor: stats.cronicas.has },
+                { label: 'AVC', valor: stats.cronicas.avc },
+                { label: 'Doença Cardíaca', valor: stats.cronicas.cardiaca },
+                { label: 'Doença nos Rins', valor: stats.cronicas.rins },
+                { label: 'Doença Respiratória', valor: stats.cronicas.respiratoria },
+                { label: 'Câncer', valor: stats.cronicas.cancer },
+                { label: 'Participou de Promoção', valor: stats.cronicas.promocao }
             ], total);
 
             // Nutrição
             renderizarPorcentagem('nutricao', [
-                { label: 'Peso Adequado', valor: stats.peso_adequado },
-                { label: 'Acima do Peso', valor: stats.acima_peso }
+                { label: 'IMC Registrado', valor: stats.nutricao.imc_registrado },
+                { label: 'Baixo Peso', valor: stats.nutricao.baixo_peso },
+                { label: 'Peso Adequado', valor: stats.nutricao.peso_adequado },
+                { label: 'Acima do Peso', valor: stats.nutricao.acima_peso },
+                { label: 'Participou de Atividade', valor: stats.nutricao.promocao }
             ], total);
 
-            // Demais cards (vazios por enquanto)
-            renderizarPorcentagem('puericultura', [], total);
-            renderizarPorcentagem('hebicultura', [], total);
-            renderizarPorcentagem('saudeMental', [], total);
+            // Puericultura
+            renderizarPorcentagem('puericultura', [
+                { label: 'Consultas em Dia', valor: stats.puericultura.consultas_dia },
+                { label: 'Vacinação Atualizada', valor: stats.puericultura.vacinacao },
+                { label: 'Atividade Saúde Mental', valor: stats.puericultura.promocao }
+            ], total);
+
+            // Hebicultura
+            renderizarPorcentagem('hebicultura', [
+                { label: 'Encaminhamentos', valor: stats.hebicultura.encaminhamentos },
+                { label: 'Grupo Saúde Sexual', valor: stats.hebicultura.grupo_sexual },
+                { label: 'Atividade Saúde Mental', valor: stats.hebicultura.promocao }
+            ], total);
+
+            // Saúde Mental
+            renderizarPorcentagem('saudeMental', [
+                { label: 'Álcool', valor: stats.saudeMental.alcool },
+                { label: 'Cigarro', valor: stats.saudeMental.cigarro },
+                { label: 'Drogas', valor: stats.saudeMental.drogas },
+                { label: 'Outras Dependências', valor: stats.saudeMental.outras },
+                { label: 'Participou de Atividade', valor: stats.saudeMental.promocao }
+            ], total);
         }
 
         function mostrarLoading(show) {
