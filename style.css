@@ -1,119 +1,219 @@
 /* ===== RESET ===== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
 
+body {
+    background: linear-gradient(135deg, #021B3A, #043E7D, #0A5EB0);
+    background-size: 200% 200%;
+    animation: gradientMove 8s ease infinite;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.container {
+    background: white;
+    width: 100%;
+    max-width: 1000px;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+}
+
+h1 {
+    text-align: center;
+    color: #043E7D;
+    margin-bottom: 30px;
+    font-weight: 700;
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    word-wrap: break-word;
+}
+
+.section {
+    margin-bottom: 30px;
+    padding: 20px;
+    border-radius: 15px;
+    background: #f5f9ff;
+    border: 1px solid #d0e2ff;
+    transition: 0.3s;
+    width: 100%;
+}
+
+.section:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.section h2 {
+    color: #043E7D;
+    margin-bottom: 15px;
+    font-size: clamp(1rem, 4vw, 1.2rem);
+    word-wrap: break-word;
+}
+
+.section p {
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: 500;
+}
+
+/* GRID CORRIGIDO - igual ao da resultados.html */
+.option-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+    gap: 10px;
+    width: 100%;
+}
+
+/* ESTILO DOS LABELS - corrigido para não vazar */
+label {
+    background: white;
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid #dbe8ff;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+
+label:hover {
+    background: #eaf3ff;
+    border-color: #043E7D;
+    transform: translateY(-2px);
+}
+
+/* INPUTS */
+input[type="radio"],
+input[type="checkbox"] {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    accent-color: #043E7D;
+    cursor: pointer;
+}
+
+/* BOTÃO */
+button {
+    width: 100%;
+    padding: 15px 20px;
+    background: linear-gradient(90deg, #043E7D, #0A5EB0);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: clamp(0.9rem, 4vw, 1.1rem);
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 20px;
+}
+
+button:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* MENSAGEM DE SUCESSO */
+.success {
+    text-align: center;
+    margin-top: 20px;
+    font-weight: bold;
+    color: #28a745;
+    padding: 10px;
+    border-radius: 8px;
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    display: none;
+}
+
+.success.show {
+    display: block;
+}
+
+/* BR (espaços) - removido para não atrapalhar */
+br {
+    display: none;
+}
+
+/* ===== MEDIA QUERIES PARA TELAS PEQUENAS ===== */
+@media (max-width: 768px) {
     body {
-      background: linear-gradient(135deg, #021B3A, #043E7D, #0A5EB0);
-      background-size: 200% 200%;
-      animation: gradientMove 8s ease infinite;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 30px;
+        padding: 15px;
     }
-
-    @keyframes gradientMove {
-      0% {
-        background-position: 0% 50%;
-      }
-
-      50% {
-        background-position: 100% 50%;
-      }
-
-      100% {
-        background-position: 0% 50%;
-      }
-    }
-
+    
     .container {
-      background: white;
-      width: 100%;
-      max-width: 1000px;
-      border-radius: 20px;
-      padding: 40px;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+        padding: 25px;
     }
-
-    h1 {
-      text-align: center;
-      color: #043E7D;
-      margin-bottom: 30px;
-      font-weight: 700;
-    }
-
+    
     .section {
-      margin-bottom: 30px;
-      padding: 20px;
-      border-radius: 15px;
-      background: #f5f9ff;
-      border: 1px solid #d0e2ff;
-      transition: 0.3s;
+        padding: 15px;
     }
-
-    .section:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    }
-
-    .section h2 {
-      color: #043E7D;
-      margin-bottom: 15px;
-      font-size: 18px;
-    }
-
+    
     .option-group {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 10px;
+        grid-template-columns: 1fr; /* Uma coluna em telas médias */
+        gap: 8px;
     }
-
+    
     label {
-      background: white;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid #dbe8ff;
-      cursor: pointer;
-      transition: 0.3s;
-      font-size: 14px;
+        padding: 10px 12px;
+        font-size: 0.9rem;
     }
+}
 
-    label:hover {
-      background: #eaf3ff;
-      border-color: #043E7D;
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
     }
-
+    
+    .container {
+        padding: 20px;
+    }
+    
+    h1 {
+        font-size: 1.3rem;
+    }
+    
+    .section h2 {
+        font-size: 1rem;
+    }
+    
+    .option-group {
+        grid-template-columns: 1fr; /* Força uma coluna em celulares */
+    }
+    
+    label {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+    
     input[type="radio"],
     input[type="checkbox"] {
-      margin-right: 8px;
-      accent-color: #043E7D;
+        width: 20px;
+        height: 20px;
     }
+}
 
-    button {
-      width: 100%;
-      padding: 15px;
-      background: linear-gradient(90deg, #043E7D, #0A5EB0);
-      border: none;
-      border-radius: 12px;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
+/* Para telas muito largas, limita o máximo de colunas */
+@media (min-width: 1200px) {
+    .option-group {
+        grid-template-columns: repeat(4, 1fr); /* Máximo 4 colunas */
     }
-
-    button:hover {
-      transform: scale(1.02);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    .success {
-      text-align: center;
-      margin-top: 15px;
-      font-weight: bold;
-      color: green;
-    }
+}
