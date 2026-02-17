@@ -5,169 +5,210 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultados - UBS Mafrense | PET Saúde Digital</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
-        }
+       * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
 
-        body {
-            background: linear-gradient(135deg, #021B3A, #043E7D, #0A5EB0);
-            min-height: 100vh;
-            padding: 30px;
-        }
+body {
+    background: linear-gradient(135deg, #021B3A, #043E7D, #0A5EB0);
+    min-height: 100vh;
+    padding: 30px;
+}
 
-        .container {
-            background: white;
-            max-width: 1200px;
-            margin: 0 auto;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
-        }
+.container {
+    background: white;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+}
 
-        h1 {
-            color: #043E7D;
-            text-align: center;
-            margin-bottom: 10px;
-        }
+h1 {
+    color: #043E7D;
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: 700;
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+}
 
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-        }
+.subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 30px;
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+}
 
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
-        }
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: 20px;
+    margin-top: 30px;
+    width: 100%;
+}
 
-        .card {
-            background: #f5f9ff;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            border: 1px solid #d0e2ff;
-        }
+.card {
+    background: #f5f9ff;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    border: 1px solid #d0e2ff;
+    width: 100%;
+    min-width: 0;
+    word-wrap: break-word;
+}
 
-        .card h3 {
-            color: #043E7D;
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-            border-bottom: 2px solid #043E7D;
-            padding-bottom: 8px;
-        }
+.card h3 {
+    color: #043E7D;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    border-bottom: 2px solid #043E7D;
+    padding-bottom: 8px;
+}
 
-        .percentage-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
+.percentage-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+}
 
-        .percentage-label {
-            color: #333;
-            font-size: 0.95rem;
-        }
+.percentage-label {
+    color: #333;
+    font-size: 0.9rem;
+    min-width: 100px;
+    flex-shrink: 0;
+}
 
-        .percentage-bar {
-            flex-grow: 1;
-            height: 8px;
-            background: #e0e0e0;
-            border-radius: 4px;
-            margin: 0 10px;
-        }
+.percentage-bar {
+    flex: 1 1 auto;
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    margin: 0 5px;
+    min-width: 60px;
+}
 
-        .percentage-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #043E7D, #0A5EB0);
-            border-radius: 4px;
-            transition: width 0.5s;
-        }
+.percentage-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #043E7D, #0A5EB0);
+    border-radius: 4px;
+    transition: width 0.5s;
+}
 
-        .percentage-value {
-            font-weight: bold;
-            color: #043E7D;
-            min-width: 50px;
-            text-align: right;
-        }
+.percentage-value {
+    font-weight: bold;
+    color: #043E7D;
+    min-width: 70px;
+    text-align: right;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
 
-        .total-patients {
-            background: linear-gradient(135deg, #043E7D, #0A5EB0);
-            color: white;
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            margin-top: 30px;
-        }
+.total-patients {
+    background: linear-gradient(135deg, #043E7D, #0A5EB0);
+    color: white;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    margin-top: 30px;
+}
 
-        .total-patients span {
-            font-size: 2.5rem;
-            font-weight: bold;
-            display: block;
-        }
+.total-patients span {
+    font-size: 2.5rem;
+    font-weight: bold;
+    display: block;
+}
 
-        .loading {
-            text-align: center;
-            padding: 50px;
-            color: #666;
-        }
+.loading {
+    text-align: center;
+    padding: 50px;
+    color: #666;
+}
 
-        .loading::after {
-            content: '';
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #043E7D;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-left: 10px;
-        }
+.loading::after {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #043E7D;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 10px;
+}
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 
-        .error {
-            background: #ffebee;
-            color: #c62828;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid #ef9a9a;
-        }
+.error {
+    background: #ffebee;
+    color: #c62828;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid #ef9a9a;
+}
 
-        .refresh-btn {
-            display: block;
-            width: 200px;
-            margin: 30px auto 0;
-            padding: 12px;
-            background: linear-gradient(90deg, #043E7D, #0A5EB0);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: 0.3s;
-        }
+.refresh-btn {
+    display: block;
+    width: 200px;
+    margin: 30px auto 0;
+    padding: 12px;
+    background: linear-gradient(90deg, #043E7D, #0A5EB0);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: 0.3s;
+}
 
-        .refresh-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(4, 62, 125, 0.3);
-        }
+.refresh-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(4, 62, 125, 0.3);
+}
 
-        .footer {
-            margin-top: 30px;
-            text-align: center;
-            color: #666;
-            font-size: 0.9rem;
-        }
+.footer {
+    margin-top: 30px;
+    text-align: center;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Ajustes para telas muito pequenas */
+@media (max-width: 480px) {
+    body {
+        padding: 15px;
+    }
+    
+    .container {
+        padding: 20px;
+    }
+    
+    .percentage-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .percentage-bar {
+        width: 100%;
+        margin: 5px 0;
+    }
+    
+    .percentage-value {
+        align-self: flex-end;
+    }
+}
     </style>
 </head>
 <body>
@@ -225,63 +266,35 @@
     </div>
 
     <script>
-        // ===== CONFIGURAÇÃO - VALORES JÁ ATUALIZADOS =====
+        // ===== CONFIGURAÇÃO =====
         const API_KEY = 'AIzaSyAkMzX6xWyyKLVEcSF76aTQNcmhqUw4Rx4';
         const SPREADSHEET_ID = '1ooeTSIOWpKLhJ_3ByNtsHl28kH8c9BBHNMhiqOgfNE4';
-        
-        // IMPORTANTE: Verifique se o nome da aba é "Página1"
-        // Se for diferente, altere aqui (ex: "Sheet1", "Dados", etc.)
         const SHEET_NAME = 'Página1';
         
-        // Mapeamento das colunas (baseado no seu formulário)
+        // MAPEAMENTO CORRIGIDO das colunas baseado nos seus dados
         const COLUNAS = {
             // Sócio Demográficos
-            RACA: 1,        // Coluna B
-            SEXO: 2,        // Coluna C
+            RACA: 0,        // Coluna A - ÍNDICE 0 (primeira coluna)
+            SEXO: 1,        // Coluna B - ÍNDICE 1 (segunda coluna)
             
             // Doenças Crônicas
-            HAS: 3,         // Coluna D
-            DM: 4,          // Coluna E
-            AVC: 5,         // Coluna F
-            CARDIACA: 6,    // Coluna G
-            RINS: 7,        // Coluna H
-            RESPIRATORIA: 8, // Coluna I
-            CANCER: 9,      // Coluna J
-            PROMOCAO_CRONICAS: 10, // Coluna K
+            DM: 2,          // Coluna C - ÍNDICE 2
+            // Pula coluna D (Created) - índice 3
+            HAS: 4,         // Coluna E - ÍNDICE 4
             
             // Nutrição
-            IMC_REGISTRADO: 11,    // Coluna L
-            BAIXO_PESO: 12,        // Coluna M
-            PESO_ADEQUADO: 13,     // Coluna N
-            ACIMA_PESO: 14,        // Coluna O
-            PROMOCAO_NUTRICAO: 15,  // Coluna P
+            PESO_ADEQUADO: 5,  // Coluna F - ÍNDICE 5
+            ACIMA_PESO: 6,     // Coluna G - ÍNDICE 6
             
-            // Puericultura
-            CONSULTAS_DIA: 16,      // Coluna Q
-            VACINACAO_ATUALIZADA: 17, // Coluna R
-            PROMOCAO_PUERICULTURA: 18, // Coluna S
-            
-            // Hebicultura
-            ENCAMINHAMENTOS: 19,      // Coluna T
-            GRUPO_SEXUAL: 20,         // Coluna U
-            PROMOCAO_HEBICULTURA: 21,  // Coluna V
-            
-            // Saúde Mental
-            ALCOOL: 22,         // Coluna W
-            CIGARRO: 23,        // Coluna X
-            DROGAS: 24,         // Coluna Y
-            OUTRAS: 25,         // Coluna Z
-            PROMOCAO_SAUDE_MENTAL: 26 // Coluna AA
+            // As demais colunas você pode adicionar conforme aparecerem
         };
 
         let dados = [];
 
-        // Função principal para carregar dados
         async function carregarDados() {
             mostrarLoading(true);
             
             try {
-                // URL da API do Google Sheets
                 const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${SHEET_NAME}?key=${API_KEY}`;
                 
                 const response = await fetch(url);
@@ -289,8 +302,12 @@
                 
                 if (result.values) {
                     const rows = result.values;
-                    if (rows.length > 1) { // Pular cabeçalho
-                        processarDados(rows.slice(1)); // Ignorar primeira linha (cabeçalho)
+                    if (rows.length > 1) {
+                        // Mostrar primeiras linhas no console para debug
+                        console.log('Cabeçalho:', rows[0]);
+                        console.log('Primeira linha de dados:', rows[1]);
+                        
+                        processarDados(rows.slice(1));
                     } else {
                         mostrarErro('Nenhum dado encontrado na planilha.');
                     }
@@ -302,7 +319,6 @@
             }
         }
 
-        // Processar dados e calcular porcentagens
         function processarDados(rows) {
             dados = rows;
             
@@ -314,55 +330,14 @@
             const total = dados.length;
             document.querySelector('#totalPatients span').textContent = total;
 
-            // Calcular estatísticas
+            // Calcular estatísticas com os índices corrigidos
             const stats = {
-                // Sócio Demográficos
                 raca: contarColuna(COLUNAS.RACA),
                 sexo: contarColuna(COLUNAS.SEXO),
-                
-                // Doenças Crônicas
-                cronicas: {
-                    has: contarSim(COLUNAS.HAS),
-                    dm: contarSim(COLUNAS.DM),
-                    avc: contarSim(COLUNAS.AVC),
-                    cardiaca: contarSim(COLUNAS.CARDIACA),
-                    rins: contarSim(COLUNAS.RINS),
-                    respiratoria: contarSim(COLUNAS.RESPIRATORIA),
-                    cancer: contarSim(COLUNAS.CANCER),
-                    promocao: contarSim(COLUNAS.PROMOCAO_CRONICAS)
-                },
-                
-                // Nutrição
-                nutricao: {
-                    imc_registrado: contarSim(COLUNAS.IMC_REGISTRADO),
-                    baixo_peso: contarSim(COLUNAS.BAIXO_PESO),
-                    peso_adequado: contarSim(COLUNAS.PESO_ADEQUADO),
-                    acima_peso: contarSim(COLUNAS.ACIMA_PESO),
-                    promocao: contarSim(COLUNAS.PROMOCAO_NUTRICAO)
-                },
-                
-                // Puericultura
-                puericultura: {
-                    consultas_dia: contarSim(COLUNAS.CONSULTAS_DIA),
-                    vacinacao: contarSim(COLUNAS.VACINACAO_ATUALIZADA),
-                    promocao: contarSim(COLUNAS.PROMOCAO_PUERICULTURA)
-                },
-                
-                // Hebicultura
-                hebicultura: {
-                    encaminhamentos: contarSim(COLUNAS.ENCAMINHAMENTOS),
-                    grupo_sexual: contarSim(COLUNAS.GRUPO_SEXUAL),
-                    promocao: contarSim(COLUNAS.PROMOCAO_HEBICULTURA)
-                },
-                
-                // Saúde Mental
-                saudeMental: {
-                    alcool: contarSim(COLUNAS.ALCOOL),
-                    cigarro: contarSim(COLUNAS.CIGARRO),
-                    drogas: contarSim(COLUNAS.DROGAS),
-                    outras: contarSim(COLUNAS.OUTRAS),
-                    promocao: contarSim(COLUNAS.PROMOCAO_SAUDE_MENTAL)
-                }
+                dm: contarValor(COLUNAS.DM, 'Sim'),
+                has: contarValor(COLUNAS.HAS, 'Sim'),
+                peso_adequado: contarValor(COLUNAS.PESO_ADEQUADO, 'Sim'),
+                acima_peso: contarValor(COLUNAS.ACIMA_PESO, 'Sim')
             };
 
             renderizarResultados(stats, total);
@@ -370,11 +345,10 @@
             mostrarResultados();
         }
 
-        // Contar valores em uma coluna
         function contarColuna(colIndex) {
             const contagem = {};
             dados.forEach(row => {
-                if (row[colIndex]) {
+                if (row[colIndex] && row[colIndex].trim() !== '') {
                     const valor = row[colIndex];
                     contagem[valor] = (contagem[valor] || 0) + 1;
                 }
@@ -382,12 +356,10 @@
             return contagem;
         }
 
-        // Contar "Sim" em uma coluna
-        function contarSim(colIndex) {
-            return dados.filter(row => row[colIndex] === 'Sim').length;
+        function contarValor(colIndex, valorBuscado) {
+            return dados.filter(row => row[colIndex] === valorBuscado).length;
         }
 
-        // Renderizar barras de porcentagem
         function renderizarPorcentagem(containerId, items, total) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
@@ -403,16 +375,15 @@
                     <div class="percentage-bar">
                         <div class="percentage-fill" style="width: ${porcentagem}%"></div>
                     </div>
-                    <span class="percentage-value">${porcentagem}%</span>
+                    <span class="percentage-value">${item.valor} (${porcentagem}%)</span>
                 `;
                 
                 container.appendChild(div);
             });
         }
 
-        // Renderizar todos os resultados
         function renderizarResultados(stats, total) {
-            // Sócio Demográficos
+            // Sócio Demográficos - AGORA MOSTRA QUANTIDADE + PORCENTAGEM
             renderizarPorcentagem('socioDemograficos', [
                 { label: 'Raça Branca', valor: stats.raca['Branca'] || 0 },
                 { label: 'Raça Preta', valor: stats.raca['Preta'] || 0 },
@@ -425,50 +396,22 @@
 
             // Doenças Crônicas
             renderizarPorcentagem('doencasCronicas', [
-                { label: 'HAS', valor: stats.cronicas.has },
-                { label: 'Diabetes', valor: stats.cronicas.dm },
-                { label: 'AVC', valor: stats.cronicas.avc },
-                { label: 'Doença Cardíaca', valor: stats.cronicas.cardiaca },
-                { label: 'Doença nos Rins', valor: stats.cronicas.rins },
-                { label: 'Doença Respiratória', valor: stats.cronicas.respiratoria },
-                { label: 'Câncer', valor: stats.cronicas.cancer },
-                { label: 'Participou de Promoção', valor: stats.cronicas.promocao }
+                { label: 'Diabetes (DM)', valor: stats.dm },
+                { label: 'HAS', valor: stats.has }
             ], total);
 
             // Nutrição
             renderizarPorcentagem('nutricao', [
-                { label: 'IMC Registrado', valor: stats.nutricao.imc_registrado },
-                { label: 'Baixo Peso', valor: stats.nutricao.baixo_peso },
-                { label: 'Peso Adequado', valor: stats.nutricao.peso_adequado },
-                { label: 'Acima do Peso', valor: stats.nutricao.acima_peso },
-                { label: 'Participou de Atividade', valor: stats.nutricao.promocao }
+                { label: 'Peso Adequado', valor: stats.peso_adequado },
+                { label: 'Acima do Peso', valor: stats.acima_peso }
             ], total);
 
-            // Puericultura
-            renderizarPorcentagem('puericultura', [
-                { label: 'Consultas em Dia', valor: stats.puericultura.consultas_dia },
-                { label: 'Vacinação Atualizada', valor: stats.puericultura.vacinacao },
-                { label: 'Atividade Saúde Mental', valor: stats.puericultura.promocao }
-            ], total);
-
-            // Hebicultura
-            renderizarPorcentagem('hebicultura', [
-                { label: 'Encaminhamentos', valor: stats.hebicultura.encaminhamentos },
-                { label: 'Grupo Saúde Sexual', valor: stats.hebicultura.grupo_sexual },
-                { label: 'Atividade Saúde Mental', valor: stats.hebicultura.promocao }
-            ], total);
-
-            // Saúde Mental
-            renderizarPorcentagem('saudeMental', [
-                { label: 'Álcool', valor: stats.saudeMental.alcool },
-                { label: 'Cigarro', valor: stats.saudeMental.cigarro },
-                { label: 'Drogas', valor: stats.saudeMental.drogas },
-                { label: 'Outras Dependências', valor: stats.saudeMental.outras },
-                { label: 'Participou de Atividade', valor: stats.saudeMental.promocao }
-            ], total);
+            // Demais cards (vazios por enquanto)
+            renderizarPorcentagem('puericultura', [], total);
+            renderizarPorcentagem('hebicultura', [], total);
+            renderizarPorcentagem('saudeMental', [], total);
         }
 
-        // Funções auxiliares de UI
         function mostrarLoading(show) {
             document.getElementById('loading').style.display = show ? 'block' : 'none';
             document.getElementById('results').style.display = show ? 'none' : 'block';
@@ -488,7 +431,6 @@
             document.getElementById('error').style.display = 'none';
         }
 
-        // Iniciar carregamento quando a página abrir
         carregarDados();
     </script>
 </body>
