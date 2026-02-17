@@ -1,252 +1,229 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UBS Mafrense | PET Saúde Digital</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UBS Mafrense | PET Saúde Digital</title>
 
-<style>
-
-/* ===== RESET ===== */
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:'Segoe UI', sans-serif;
-}
-
-body{
-  background: linear-gradient(135deg,#021B3A,#043E7D,#0A5EB0);
-  background-size:200% 200%;
-  animation: gradientMove 8s ease infinite;
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:30px;
-}
-
-@keyframes gradientMove{
-  0%{background-position:0% 50%;}
-  50%{background-position:100% 50%;}
-  100%{background-position:0% 50%;}
-}
-
-.container{
-  background:white;
-  width:100%;
-  max-width:1000px;
-  border-radius:20px;
-  padding:40px;
-  box-shadow:0 25px 60px rgba(0,0,0,0.25);
-}
-
-h1{
-  text-align:center;
-  color:#043E7D;
-  margin-bottom:30px;
-  font-weight:700;
-}
-
-.section{
-  margin-bottom:30px;
-  padding:20px;
-  border-radius:15px;
-  background:#f5f9ff;
-  border:1px solid #d0e2ff;
-  transition:0.3s;
-}
-
-.section:hover{
-  transform:translateY(-3px);
-  box-shadow:0 10px 25px rgba(0,0,0,0.1);
-}
-
-.section h2{
-  color:#043E7D;
-  margin-bottom:15px;
-  font-size:18px;
-}
-
-.option-group{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:10px;
-}
-
-label{
-  background:white;
-  padding:10px 12px;
-  border-radius:10px;
-  border:1px solid #dbe8ff;
-  cursor:pointer;
-  transition:0.3s;
-  font-size:14px;
-}
-
-label:hover{
-  background:#eaf3ff;
-  border-color:#043E7D;
-}
-
-input[type="radio"],
-input[type="checkbox"]{
-  margin-right:8px;
-  accent-color:#043E7D;
-}
-
-button{
-  width:100%;
-  padding:15px;
-  background:linear-gradient(90deg,#043E7D,#0A5EB0);
-  border:none;
-  border-radius:12px;
-  color:white;
-  font-size:16px;
-  cursor:pointer;
-  transition:0.3s;
-}
-
-button:hover{
-  transform:scale(1.02);
-  box-shadow:0 10px 20px rgba(0,0,0,0.2);
-}
-
-.success{
-  text-align:center;
-  margin-top:15px;
-  font-weight:bold;
-  color:green;
-}
-
-</style>
-</head>
-<body>
-
-<div class="container">
-<h1>UBS Mafrense - PET Saúde Digital</h1>
-
-<form id="formSaude">
-
-<!-- 1 SOCIO DEMOGRAFICOS -->
-<div class="section">
-<h2>1. Sócio Demográficos</h2>
-
-<p><strong>Raça:</strong></p>
-<div class="option-group">
-<label><input type="radio" name="Raca" value="Branca" required> Branca</label>
-<label><input type="radio" name="Raca" value="Preta"> Preta</label>
-<label><input type="radio" name="Raca" value="Parda"> Parda</label>
-<label><input type="radio" name="Raca" value="Amarela"> Amarela</label>
-<label><input type="radio" name="Raca" value="Indígena"> Indígena</label>
-</div>
-
-<br>
-
-<p><strong>Sexo:</strong></p>
-<div class="option-group">
-<label><input type="radio" name="Sexo" value="Feminino" required> Feminino</label>
-<label><input type="radio" name="Sexo" value="Masculino"> Masculino</label>
-</div>
-</div>
-
-<!-- 2 DOENÇAS CRÔNICAS -->
-<div class="section">
-<h2>2. Doenças Crônicas Degenerativas</h2>
-<div class="option-group">
-<label><input type="checkbox" name="HAS" value="Sim"> HAS</label>
-<label><input type="checkbox" name="DM" value="Sim"> Diabetes</label>
-<label><input type="checkbox" name="AVC" value="Sim"> AVC</label>
-<label><input type="checkbox" name="Cardiaca" value="Sim"> Doença Cardíaca</label>
-<label><input type="checkbox" name="Rins" value="Sim"> Doença nos Rins</label>
-<label><input type="checkbox" name="Respiratoria" value="Sim"> Doença Respiratória</label>
-<label><input type="checkbox" name="Cancer" value="Sim"> Câncer</label>
-<label><input type="checkbox" name="PromocaoCronicas" value="Sim"> Participou de Atividade de Promoção</label>
-</div>
-</div>
-
-<!-- 3 NUTRIÇÃO -->
-<div class="section">
-<h2>3. Nutrição</h2>
-<div class="option-group">
-<label><input type="checkbox" name="IMC_Registrado" value="Sim"> IMC Registrado</label>
-<label><input type="checkbox" name="Baixo_Peso" value="Sim"> Baixo Peso</label>
-<label><input type="checkbox" name="Peso_Adequado" value="Sim"> Peso Adequado</label>
-<label><input type="checkbox" name="Acima_Peso" value="Sim"> Acima do Peso</label>
-<label><input type="checkbox" name="Promocao_Nutricao" value="Sim"> Participou de Atividade</label>
-</div>
-</div>
-
-<!-- 4 PUERICULTURA -->
-<div class="section">
-<h2>4. Puericultura</h2>
-<div class="option-group">
-<label><input type="checkbox" name="Consultas_Dia" value="Sim"> Consultas em Dia</label>
-<label><input type="checkbox" name="Vacinacao_Atualizada" value="Sim"> Vacinação Atualizada</label>
-<label><input type="checkbox" name="Promocao_Puericultura" value="Sim"> Atividade de Saúde Mental</label>
-</div>
-</div>
-
-<!-- 5 HEBICULTURA -->
-<div class="section">
-<h2>5. Hebicultura (Adolescentes)</h2>
-<div class="option-group">
-<label><input type="checkbox" name="Encaminhamentos" value="Sim"> Encaminhamento</label>
-<label><input type="checkbox" name="Grupo_Sexual" value="Sim"> Grupo Saúde Sexual</label>
-<label><input type="checkbox" name="Promocao_Hebicultura" value="Sim"> Atividade Saúde Mental</label>
-</div>
-</div>
-
-<!-- 6 SAÚDE MENTAL -->
-<div class="section">
-<h2>6. Saúde Mental</h2>
-<div class="option-group">
-<label><input type="checkbox" name="Alcool" value="Sim"> Álcool</label>
-<label><input type="checkbox" name="Cigarro" value="Sim"> Cigarro</label>
-<label><input type="checkbox" name="Drogas" value="Sim"> Drogas</label>
-<label><input type="checkbox" name="Outras" value="Sim"> Outras</label>
-<label><input type="checkbox" name="Promocao_Saude_Mental" value="Sim"> Participou de Atividade</label>
-</div>
-</div>
-
-<input type="hidden" name="Created" value="x-sheetmonkey-current-date-time">
-
-<button type="submit">Registrar Paciente</button>
-<div class="success" id="msg"></div>
-
-</form>
-</div>
-
-<script>
-
-const form = document.querySelector('#formSaude');
-const msg = document.querySelector('#msg');
-
-form.addEventListener('submit', async (e)=>{
-  e.preventDefault();
-
-  const formData = new FormData(form);
-
-  try{
-    const response = await fetch("https://api.sheetmonkey.io/form/txfGUUxBzxfnCNxUEumv2M",{
-      method:"POST",
-      body:formData
-    });
-
-    if(response.ok){
-      msg.textContent = "Registro enviado com sucesso!";
-      form.reset();
-    }else{
-      msg.textContent = "Erro ao enviar.";
+  <style>
+    /* ===== RESET ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
     }
 
-  }catch(err){
-    msg.textContent = "Erro de conexão.";
-  }
+    body {
+      background: linear-gradient(135deg, #021B3A, #043E7D, #0A5EB0);
+      background-size: 200% 200%;
+      animation: gradientMove 8s ease infinite;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+    }
 
-});
+    @keyframes gradientMove {
+      0% {
+        background-position: 0% 50%;
+      }
 
-</script>
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .container {
+      background: white;
+      width: 100%;
+      max-width: 1000px;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+    }
+
+    h1 {
+      text-align: center;
+      color: #043E7D;
+      margin-bottom: 30px;
+      font-weight: 700;
+    }
+
+    .section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border-radius: 15px;
+      background: #f5f9ff;
+      border: 1px solid #d0e2ff;
+      transition: 0.3s;
+    }
+
+    .section:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .section h2 {
+      color: #043E7D;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .option-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+
+    label {
+      background: white;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #dbe8ff;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 14px;
+    }
+
+    label:hover {
+      background: #eaf3ff;
+      border-color: #043E7D;
+    }
+
+    input[type="radio"],
+    input[type="checkbox"] {
+      margin-right: 8px;
+      accent-color: #043E7D;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(90deg, #043E7D, #0A5EB0);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.02);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .success {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+      color: green;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>UBS Mafrense - PET Saúde Digital</h1>
+
+    <form id="formSaude">
+
+      <!-- 1 SOCIO DEMOGRAFICOS -->
+      <div class="section">
+        <h2>1. Sócio Demográficos</h2>
+
+        <p><strong>Raça:</strong></p>
+        <div class="option-group">
+          <label><input type="radio" name="Raca" value="Branca" required> Branca</label>
+          <label><input type="radio" name="Raca" value="Preta"> Preta</label>
+          <label><input type="radio" name="Raca" value="Parda"> Parda</label>
+          <label><input type="radio" name="Raca" value="Amarela"> Amarela</label>
+          <label><input type="radio" name="Raca" value="Indígena"> Indígena</label>
+        </div>
+
+        <br>
+
+        <p><strong>Sexo:</strong></p>
+        <div class="option-group">
+          <label><input type="radio" name="Sexo" value="Feminino" required> Feminino</label>
+          <label><input type="radio" name="Sexo" value="Masculino"> Masculino</label>
+        </div>
+      </div>
+
+      <!-- 2 DOENÇAS CRÔNICAS -->
+      <div class="section">
+        <h2>2. Doenças Crônicas Degenerativas</h2>
+        <div class="option-group">
+          <label><input type="checkbox" name="HAS" value="Sim"> HAS</label>
+          <label><input type="checkbox" name="DM" value="Sim"> Diabetes</label>
+          <label><input type="checkbox" name="AVC" value="Sim"> AVC</label>
+          <label><input type="checkbox" name="Cardiaca" value="Sim"> Doença Cardíaca</label>
+          <label><input type="checkbox" name="Rins" value="Sim"> Doença nos Rins</label>
+          <label><input type="checkbox" name="Respiratoria" value="Sim"> Doença Respiratória</label>
+          <label><input type="checkbox" name="Cancer" value="Sim"> Câncer</label>
+          <label><input type="checkbox" name="PromocaoCronicas" value="Sim"> Participou de Atividade de Promoção</label>
+        </div>
+      </div>
+
+      <!-- 3 NUTRIÇÃO -->
+      <div class="section">
+        <h2>3. Nutrição</h2>
+        <div class="option-group">
+          <label><input type="checkbox" name="IMC_Registrado" value="Sim"> IMC Registrado</label>
+          <label><input type="checkbox" name="Baixo_Peso" value="Sim"> Baixo Peso</label>
+          <label><input type="checkbox" name="Peso_Adequado" value="Sim"> Peso Adequado</label>
+          <label><input type="checkbox" name="Acima_Peso" value="Sim"> Acima do Peso</label>
+          <label><input type="checkbox" name="Promocao_Nutricao" value="Sim"> Participou de Atividade</label>
+        </div>
+      </div>
+
+      <!-- 4 PUERICULTURA -->
+      <div class="section">
+        <h2>4. Puericultura</h2>
+        <div class="option-group">
+          <label><input type="checkbox" name="Consultas_Dia" value="Sim"> Consultas em Dia</label>
+          <label><input type="checkbox" name="Vacinacao_Atualizada" value="Sim"> Vacinação Atualizada</label>
+          <label><input type="checkbox" name="Promocao_Puericultura" value="Sim"> Atividade de Saúde Mental</label>
+        </div>
+      </div>
+
+      <!-- 5 HEBICULTURA -->
+      <div class="section">
+        <h2>5. Hebicultura (Adolescentes)</h2>
+        <div class="option-group">
+          <label><input type="checkbox" name="Encaminhamentos" value="Sim"> Encaminhamento</label>
+          <label><input type="checkbox" name="Grupo_Sexual" value="Sim"> Grupo Saúde Sexual</label>
+          <label><input type="checkbox" name="Promocao_Hebicultura" value="Sim"> Atividade Saúde Mental</label>
+        </div>
+      </div>
+
+      <!-- 6 SAÚDE MENTAL -->
+      <div class="section">
+        <h2>6. Saúde Mental</h2>
+        <div class="option-group">
+          <label><input type="checkbox" name="Alcool" value="Sim"> Álcool</label>
+          <label><input type="checkbox" name="Cigarro" value="Sim"> Cigarro</label>
+          <label><input type="checkbox" name="Drogas" value="Sim"> Drogas</label>
+          <label><input type="checkbox" name="Outras" value="Sim"> Outras</label>
+          <label><input type="checkbox" name="Promocao_Saude_Mental" value="Sim"> Participou de Atividade</label>
+        </div>
+      </div>
+
+      <input type="hidden" name="Created" value="x-sheetmonkey-current-date-time">
+
+      <button type="submit">Registrar Paciente</button>
+      <div class="success" id="msg"></div>
+
+    </form>
 
 </body>
-     </html>
+<script src="index.js"></script>
+</html>
