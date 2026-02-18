@@ -319,6 +319,20 @@ h1 {
                 const url = '/.netlify/functions/sheets-data';
 
                 const response = await fetch(url);
+
+                if (!response.ok) {
+                    const text = await response.text();
+                    let errorMsg;
+                    try {
+                        const errorData = JSON.parse(text);
+                        errorMsg = errorData.error?.message || errorData.error || text;
+                    } catch {
+                        errorMsg = text;
+                    }
+                    mostrarErro('Erro ao carregar dados: ' + errorMsg);
+                    return;
+                }
+
                 const result = await response.json();
                 
                 if (result.values) {
