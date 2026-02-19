@@ -24,3 +24,11 @@ form.addEventListener('submit', async (e)=>{
   }
 
 });
+
+
+const menuBtn = document.getElementById("menuBtn");
+const sidebar = document.getElementById("sidebar");
+
+menuBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("active");
+});

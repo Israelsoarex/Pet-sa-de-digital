@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultados - UBS Mafrense | PET Sa煤de Digital</title>
+    <title>Resultados - UBS Mafrense | PET Saúde Digital</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
        * {
     margin: 0;
@@ -17,7 +18,88 @@ body {
     min-height: 100vh;
     padding: 30px;
 }
+/* ===== HEADER ===== */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #fff;
+    width: 100%;
+    height: 3.5rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
 
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    padding: 0 1rem;
+}
+
+nav img {
+    height: 2.5rem;
+}
+
+/* BOTÃO MENU */
+.menu-btn {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: #043E7D;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 3rem;
+    height: 3rem ;
+}
+
+.menu-btn:hover {
+    color: #0A5EB0;
+    transform: scale(1.1);
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    position: fixed;
+    top: 3.5rem;
+    right: -250px;
+    width: 250px;
+    height: 4rem;
+    background: #043E7D;
+    padding-top: 0.5rem;
+    transition: 0.3s ease-in-out;
+    z-index: 999;
+    border-radius: 0 0 0 .5rem;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar ul li {
+    padding: 15px 20px;
+}
+
+.sidebar ul li a {
+    color: white;
+
+    text-decoration: none;
+    font-weight: 600;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar ul li a:hover {
+    background: #0A5EB0;
+    border-radius: 8px;
+    padding-left: 10px;
+}
+
+/* ATIVO */
+.sidebar.active {
+    right: 0;
+}
 .container {
     background: white;
     width: 100%;
@@ -26,6 +108,7 @@ body {
     border-radius: 20px;
     padding: 40px;
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+    margin-top: 6rem;
 }
 
 h1 {
@@ -212,9 +295,25 @@ h1 {
     </style>
 </head>
 <body>
+<header>
+    <nav>
+        <img src="imagens/pet_logo.png" alt="Logo PET Saúde">
+        
+        <button class="menu-btn" id="menuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+</header>
+
+<!-- MENU LATERAL -->
+<aside class="sidebar" id="sidebar">
+    <ul>
+        <li><a href="index.html">Formulário</a></li>
+    </ul>
+</aside>
     <div class="container">
-        <h1>馃搳 Resultados - UBS Mafrense</h1>
-        <div class="subtitle">PET Sa煤de Digital - An谩lise de Dados dos Pacientes</div>
+        <h1>📊 Resultados - UBS Mafrense</h1>
+        <div class="subtitle">PET Saúde Digital - Análise de Dados dos Pacientes</div>
 
         <div id="loading" class="loading">Carregando dados da planilha...</div>
         <div id="error" class="error" style="display: none;"></div>
@@ -227,37 +326,37 @@ h1 {
 
             <div class="stats-container" id="statsContainer">
                 <div class="card">
-                    <h3>馃懃 S贸cio Demogr谩ficos</h3>
+                    <h3>👥 Sócio Demográficos</h3>
                     <div id="socioDemograficos"></div>
                 </div>
 
                 <div class="card">
-                    <h3>鉂わ笍 Doen莽as Cr么nicas</h3>
+                    <h3>❤️ Doenças Crônicas</h3>
                     <div id="doencasCronicas"></div>
                 </div>
 
                 <div class="card">
-                    <h3>馃 Nutri莽茫o</h3>
+                    <h3>🥗 Nutrição</h3>
                     <div id="nutricao"></div>
                 </div>
 
                 <div class="card">
-                    <h3>馃懚 Puericultura</h3>
+                    <h3>👶 Puericultura</h3>
                     <div id="puericultura"></div>
                 </div>
 
                 <div class="card">
-                    <h3>馃 Hebicultura</h3>
+                    <h3>🧑 Hebicultura</h3>
                     <div id="hebicultura"></div>
                 </div>
 
                 <div class="card">
-                    <h3>馃 Sa煤de Mental</h3>
+                    <h3>🧠 Saúde Mental</h3>
                     <div id="saudeMental"></div>
                 </div>
             </div>
 
-            <button class="refresh-btn" onclick="carregarDados()">馃攧 Atualizar Dados</button>
+            <button class="refresh-btn" onclick="carregarDados()">🔄 Atualizar Dados</button>
         </div>
 
         <div class="footer">
@@ -265,18 +364,18 @@ h1 {
         </div>
     </div>
     <script>
-        // ===== CONFIGURA脟脙O =====
-        // API_KEY e SPREADSHEET_ID s茫o lidos no servidor via Netlify Function
+        // ===== CONFIGURAÇÃO =====
+        // API_KEY e SPREADSHEET_ID são lidos no servidor via Netlify Function
 
-        // MAPEAMENTO COMPLETO de todas as colunas baseado no seu cabe莽alho
+        // MAPEAMENTO COMPLETO de todas as colunas baseado no seu cabeçalho
         const COLUNAS = {
-            // S贸cio Demogr谩ficos (铆ndices 0-1)
+            // Sócio Demográficos (índices 0-1)
             RACA: 0,        // Coluna A
             SEXO: 1,        // Coluna B
             
-            // Doen莽as Cr么nicas (铆ndices 2-13)
+            // Doenças Crônicas (índices 2-13)
             DM: 2,              // Coluna C
-            // Pula 铆ndice 3 (Created)
+            // Pula índice 3 (Created)
             HAS: 4,             // Coluna E
             PESO_ADEQUADO: 5,   // Coluna F
             ACIMA_PESO: 6,      // Coluna G
@@ -287,22 +386,22 @@ h1 {
             CANCER: 11,         // Coluna L
             PROMOCAO_CRONICAS: 12, // Coluna M
             
-            // Nutri莽茫o (铆ndices 13-16)
+            // Nutrição (índices 13-16)
             IMC_REGISTRADO: 13,    // Coluna N
             BAIXO_PESO: 14,        // Coluna O
             PROMOCAO_NUTRICAO: 15,  // Coluna P
             
-            // Puericultura (铆ndices 16-18)
+            // Puericultura (índices 16-18)
             CONSULTAS_DIA: 16,          // Coluna Q
             VACINACAO_ATUALIZADA: 17,    // Coluna R
             PROMOCAO_PUERICULTURA: 18,   // Coluna S
             
-            // Hebicultura (铆ndices 19-21)
+            // Hebicultura (índices 19-21)
             ENCAMINHAMENTOS: 19,         // Coluna T
             GRUPO_SEXUAL: 20,            // Coluna U
             PROMOCAO_HEBICULTURA: 21,    // Coluna V
             
-            // Sa煤de Mental (铆ndices 22-26)
+            // Saúde Mental (índices 22-26)
             ALCOOL: 22,          // Coluna W
             CIGARRO: 23,         // Coluna X
             DROGAS: 24,          // Coluna Y
@@ -338,7 +437,7 @@ h1 {
                 if (result.values) {
                     const rows = result.values;
                     if (rows.length > 1) {
-                        console.log('Cabe莽alho:', rows[0]);
+                        console.log('Cabeçalho:', rows[0]);
                         console.log('Total de linhas:', rows.length - 1);
                         
                         processarDados(rows.slice(1));
@@ -349,7 +448,7 @@ h1 {
                     mostrarErro('Erro ao carregar dados: ' + (result.error?.message || 'Erro desconhecido'));
                 }
             } catch (error) {
-                mostrarErro('Erro de conex茫o: ' + error.message);
+                mostrarErro('Erro de conexão: ' + error.message);
             }
         }
 
@@ -364,13 +463,13 @@ h1 {
             const total = dados.length;
             document.querySelector('#totalPatients span').textContent = total;
 
-            // Calcular estat铆sticas COMPLETAS
+            // Calcular estatísticas COMPLETAS
             const stats = {
-                // S贸cio Demogr谩ficos
+                // Sócio Demográficos
                 raca: contarColuna(COLUNAS.RACA),
                 sexo: contarColuna(COLUNAS.SEXO),
                 
-                // Doen莽as Cr么nicas
+                // Doenças Crônicas
                 cronicas: {
                     dm: contarSim(COLUNAS.DM),
                     has: contarSim(COLUNAS.HAS),
@@ -382,7 +481,7 @@ h1 {
                     promocao: contarSim(COLUNAS.PROMOCAO_CRONICAS)
                 },
                 
-                // Nutri莽茫o
+                // Nutrição
                 nutricao: {
                     imc_registrado: contarSim(COLUNAS.IMC_REGISTRADO),
                     baixo_peso: contarSim(COLUNAS.BAIXO_PESO),
@@ -405,7 +504,7 @@ h1 {
                     promocao: contarSim(COLUNAS.PROMOCAO_HEBICULTURA)
                 },
                 
-                // Sa煤de Mental
+                // Saúde Mental
                 saudeMental: {
                     alcool: contarSim(COLUNAS.ALCOOL),
                     cigarro: contarSim(COLUNAS.CIGARRO),
@@ -439,7 +538,7 @@ h1 {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
             
-            // Se n茫o h谩 items, mostra mensagem
+            // Se não há items, mostra mensagem
             if (items.length === 0) {
                 container.innerHTML = '<div style="text-align: center; color: #999; padding: 10px;">Nenhum dado registrado</div>';
                 return;
@@ -464,30 +563,30 @@ h1 {
         }
 
         function renderizarResultados(stats, total) {
-            // S贸cio Demogr谩ficos
+            // Sócio Demográficos
             renderizarPorcentagem('socioDemograficos', [
-                { label: 'Ra莽a Branca', valor: stats.raca['Branca'] || 0 },
-                { label: 'Ra莽a Preta', valor: stats.raca['Preta'] || 0 },
-                { label: 'Ra莽a Parda', valor: stats.raca['Parda'] || 0 },
-                { label: 'Ra莽a Amarela', valor: stats.raca['Amarela'] || 0 },
-                { label: 'Ra莽a Ind铆gena', valor: stats.raca['Ind铆gena'] || 0 },
+                { label: 'Raça Branca', valor: stats.raca['Branca'] || 0 },
+                { label: 'Raça Preta', valor: stats.raca['Preta'] || 0 },
+                { label: 'Raça Parda', valor: stats.raca['Parda'] || 0 },
+                { label: 'Raça Amarela', valor: stats.raca['Amarela'] || 0 },
+                { label: 'Raça Indígena', valor: stats.raca['Indígena'] || 0 },
                 { label: 'Sexo Feminino', valor: stats.sexo['Feminino'] || 0 },
                 { label: 'Sexo Masculino', valor: stats.sexo['Masculino'] || 0 }
             ], total);
 
-            // Doen莽as Cr么nicas
+            // Doenças Crônicas
             renderizarPorcentagem('doencasCronicas', [
                 { label: 'Diabetes (DM)', valor: stats.cronicas.dm },
                 { label: 'HAS', valor: stats.cronicas.has },
                 { label: 'AVC', valor: stats.cronicas.avc },
-                { label: 'Doen莽a Card铆aca', valor: stats.cronicas.cardiaca },
-                { label: 'Doen莽a nos Rins', valor: stats.cronicas.rins },
-                { label: 'Doen莽a Respirat贸ria', valor: stats.cronicas.respiratoria },
-                { label: 'C芒ncer', valor: stats.cronicas.cancer },
-                { label: 'Participou de Promo莽茫o', valor: stats.cronicas.promocao }
+                { label: 'Doença Cardíaca', valor: stats.cronicas.cardiaca },
+                { label: 'Doença nos Rins', valor: stats.cronicas.rins },
+                { label: 'Doença Respiratória', valor: stats.cronicas.respiratoria },
+                { label: 'Câncer', valor: stats.cronicas.cancer },
+                { label: 'Participou de Promoção', valor: stats.cronicas.promocao }
             ], total);
 
-            // Nutri莽茫o
+            // Nutrição
             renderizarPorcentagem('nutricao', [
                 { label: 'IMC Registrado', valor: stats.nutricao.imc_registrado },
                 { label: 'Baixo Peso', valor: stats.nutricao.baixo_peso },
@@ -499,23 +598,23 @@ h1 {
             // Puericultura
             renderizarPorcentagem('puericultura', [
                 { label: 'Consultas em Dia', valor: stats.puericultura.consultas_dia },
-                { label: 'Vacina莽茫o Atualizada', valor: stats.puericultura.vacinacao },
-                { label: 'Atividade Sa煤de Mental', valor: stats.puericultura.promocao }
+                { label: 'Vacinação Atualizada', valor: stats.puericultura.vacinacao },
+                { label: 'Atividade Saúde Mental', valor: stats.puericultura.promocao }
             ], total);
 
             // Hebicultura
             renderizarPorcentagem('hebicultura', [
                 { label: 'Encaminhamentos', valor: stats.hebicultura.encaminhamentos },
-                { label: 'Grupo Sa煤de Sexual', valor: stats.hebicultura.grupo_sexual },
-                { label: 'Atividade Sa煤de Mental', valor: stats.hebicultura.promocao }
+                { label: 'Grupo Saúde Sexual', valor: stats.hebicultura.grupo_sexual },
+                { label: 'Atividade Saúde Mental', valor: stats.hebicultura.promocao }
             ], total);
 
-            // Sa煤de Mental
+            // Saúde Mental
             renderizarPorcentagem('saudeMental', [
-                { label: '脕lcool', valor: stats.saudeMental.alcool },
+                { label: 'Álcool', valor: stats.saudeMental.alcool },
                 { label: 'Cigarro', valor: stats.saudeMental.cigarro },
                 { label: 'Drogas', valor: stats.saudeMental.drogas },
-                { label: 'Outras Depend锚ncias', valor: stats.saudeMental.outras },
+                { label: 'Outras Dependências', valor: stats.saudeMental.outras },
                 { label: 'Participou de Atividade', valor: stats.saudeMental.promocao }
             ], total);
         }
@@ -540,6 +639,13 @@ h1 {
         }
 
         carregarDados();
+
+const menuBtn = document.getElementById("menuBtn");
+const sidebar = document.getElementById("sidebar");
+
+menuBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("active");
+});
     </script>
 </body>
 </html>
