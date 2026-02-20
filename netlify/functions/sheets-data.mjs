@@ -1,7 +1,8 @@
 export default async (req) => {
   const API_KEY = process.env.API_KEY;
   const SPREADSHEET_ID = process.env.SPREADSHEET_ID;
-
+  console.log(SPREADSHEET_ID);
+  console.log(API_KEY);
   const corsHeaders = {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
