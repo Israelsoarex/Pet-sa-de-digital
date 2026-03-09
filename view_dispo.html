@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disponibilidade dos Alunos - PET Saúde Digital</title>
+    <link rel="stylesheet" href="disponibilidade.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Firebase (versão compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <style>
+        /* Estilos específicos para a visualização */
+        .tabela-disponibilidade {
+            overflow-x: auto;
+            margin-top: 20px;
+            background: white;
+            border-radius: 15px;
+            padding: 5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: #043E7D;
+            color: white;
+            padding: 15px 10px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px 8px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8faff;
+        }
+        
+        tr:hover {
+            background: #e8f0fe;
+        }
+        
+        .disponivel {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .indisponivel {
+            color: #dc3545;
+            font-size: 1.2rem;
+        }
+        
+        .periodo-icon {
+            display: inline-block;
+            margin: 0 2px;
+            font-size: 1.1rem;
+        }
+        
+        .aluno-nome {
+            font-weight: 600;
+            color: #043E7D;
+            text-align: left;
+            padding-left: 15px;
+        }
+        
+        .resumo {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filtros {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .filtros select, .filtros input {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            flex: 1;
+            min-width: 200px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        
+        .filtros select:focus, .filtros input:focus {
+            outline: none;
+            border-color: #043E7D;
+            box-shadow: 0 0 0 3px rgba(4, 62, 125, 0.1);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .loading i {
+            font-size: 2rem;
+            color: #043E7D;
+            margin-bottom: 15px;
+            animation: spin 1s infinite linear;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .estatisticas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .estatistica-card {
+            background: linear-gradient(135deg, #043E7D, #0A5EB0);
+            color: white;
+            padding: 25px 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(4, 62, 125, 0.2);
+            transition: transform 0.3s;
+        }
+        
+        .estatistica-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .estatistica-card .numero {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+        
+        .estatistica-card .rotulo {
+            font-size: 1rem;
+            opacity: 0.95;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .estatistica-card .subtitulo {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-top: 8px;
+        }
+        
+        .tooltip-info {
+            position: relative;
+            cursor: help;
+            border-bottom: 1px dotted #ccc;
+        }
+        
+        .badge-turno {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .badge-manha {
+            background: #ffe6b3;
+            color: #8a6d3b;
+        }
+        
+        .badge-tarde {
+            background: #b3d9ff;
+            color: #23527c;
+        }
+        
+        .sem-dados {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .sem-dados i {
+            font-size: 4rem;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+        
+        .btn-refresh {
+            background: none;
+            border: 2px solid #043E7D;
+            color: #043E7D;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-refresh:hover {
+            background: #043E7D;
+            color: white;
+        }
+        
+        .data-atualizacao {
+            text-align: right;
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 15px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <img src="imagens/pet_logo.png" alt="Logo PET Saúde">
+            <button class="menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+        <ul>
+            <li><a href="resultados.html">Resultados</a></li>
+            <li><a href="disponibilidade.html">Registrar Disponibilidade</a></li>
+            <li><a href="view_dispo.html" style="background: #0A5EB0; border-radius: 8px;">Ver Disponibilidade</a></li>
+        </ul>
+    </aside>
+
+    <div class="container">
+        <h1>📊 Disponibilidade dos Alunos</h1>
+        
+        <div class="resumo">
+            <i class="fas fa-info-circle" style="font-size: 1.5rem;"></i>
+            <span><strong>Legenda:</strong> 🌅 = Manhã (8:30-12h) | 🌆 = Tarde (14:30-18h) | ❌ = Indisponível</span>
+        </div>
+
+        <div class="filtros">
+            <input type="text" id="filtroNome" placeholder="🔍 Filtrar por nome...">
+            <select id="filtroTurno">
+                <option value="">Todos os turnos</option>
+                <option value="manha">🌅 Manhã</option>
+                <option value="tarde">🌆 Tarde</option>
+            </select>
+            <select id="filtroDia">
+                <option value="">Todos os dias</option>
+                <option value="segunda">Segunda-feira</option>
+                <option value="terca">Terça-feira</option>
+                <option value="quarta">Quarta-feira</option>
+                <option value="quinta">Quinta-feira</option>
+                <option value="sexta">Sexta-feira</option>
+            </select>
+            <button class="btn-refresh" id="refreshBtn">
+                <i class="fas fa-sync-alt"></i> Atualizar
+            </button>
+        </div>
+
+        <div id="estatisticas" class="estatisticas"></div>
+
+        <div id="tabelaContainer" class="tabela-disponibilidade">
+            <div class="loading">
+                <i class="fas fa-circle-notch"></i>
+                <p>Carregando disponibilidade dos alunos...</p>
+            </div>
+        </div>
+        
+        <div id="dataAtualizacao" class="data-atualizacao"></div>
+    </div>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBweXnIsgNorZ6p_jIAscQx5Jc-Hw5cXr8",
+            authDomain: "petsaudedigital-a9c6a.firebaseapp.com",
+            projectId: "petsaudedigital-a9c6a",
+            storageBucket: "petsaudedigital-a9c6a.firebasestorage.app",
+            messagingSenderId: "686936715435",
+            appId: "1:686936715435:web:4d361b758bbf7f46ccc7ee",
+            measurementId: "G-0RP1NCVW61"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Menu sidebar
+        document.getElementById("menuBtn").addEventListener("click", () => {
+            document.getElementById("sidebar").classList.toggle("active");
+        });
+
+        // Elementos de filtro
+        const filtroNome = document.getElementById('filtroNome');
+        const filtroTurno = document.getElementById('filtroTurno');
+        const filtroDia = document.getElementById('filtroDia');
+        const refreshBtn = document.getElementById('refreshBtn');
+
+        // Estado global dos dados
+        let todosAlunos = [];
+        let lastUpdate = null;
+
+        // Função para traduzir dia da semana
+        function traduzirDia(dia) {
+            const dias = {
+                'segunda': 'Segunda',
+                'terca': 'Terça',
+                'quarta': 'Quarta',
+                'quinta': 'Quinta',
+                'sexta': 'Sexta'
+            };
+            return dias[dia] || dia;
+        }
+
+        // Função para carregar dados
+        async function carregarDisponibilidade() {
+            const container = document.getElementById('tabelaContainer');
+            const estatisticasDiv = document.getElementById('estatisticas');
+            const dataAtualizacao = document.getElementById('dataAtualizacao');
+            
+            // Mostrar loading
+            container.innerHTML = `
+                <div class="loading">
+                    <i class="fas fa-circle-notch"></i>
+                    <p>Carregando disponibilidade dos alunos...</p>
+                </div>
+            `;
+            
+            try {
+                // Buscar dados do Firestore
+                const snapshot = await db.collection('disponibilidade')
+                    .orderBy('nome')
+                    .get();
+                
+                if (snapshot.empty) {
+                    container.innerHTML = `
+                        <div class="sem-dados">
+                            <i class="fas fa-calendar-times"></i>
+                            <h3>Nenhuma disponibilidade registrada ainda</h3>
+                            <p>Os alunos ainda não preencheram o formulário de disponibilidade.</p>
+                            <a href="disponibilidade.html" style="display: inline-block; margin-top: 20px; padding: 10px 25px; background: #043E7D; color: white; text-decoration: none; border-radius: 8px;">Registrar Agora</a>
+                        </div>
+                    `;
+                    estatisticasDiv.innerHTML = '';
+                    dataAtualizacao.textContent = '';
+                    return;
+                }
+
+                // Processar dados
+                todosAlunos = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    return {
+                        id: doc.id,
+                        nome: data.nome || 'Nome não informado',
+                        turno: data.turno || '',
+                        turno_label: data.turno_label || '',
+                        disponibilidade: data.disponibilidade || {},
+                        horas_semanais: data.horas_semanais || 0,
+                        observacoes: data.observacoes || '',
+                        data_registro_br: data.data_registro_br || new Date().toLocaleString('pt-BR')
+                    };
+                });
+
+                lastUpdate = new Date();
+                aplicarFiltros();
+
+            } catch (error) {
+                console.error("Erro ao carregar:", error);
+                container.innerHTML = `
+                    <div class="sem-dados" style="color: #dc3545;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Erro ao carregar dados</h3>
+                        <p>${error.message || 'Verifique sua conexão com o Firebase'}</p>
+                        <button onclick="location.reload()" class="btn-refresh" style="margin-top: 20px;">
+                            <i class="fas fa-redo"></i> Tentar novamente
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Função para aplicar filtros
+        function aplicarFiltros() {
+            const container = document.getElementById('tabelaContainer');
+            const estatisticasDiv = document.getElementById('estatisticas');
+            const dataAtualizacao = document.getElementById('dataAtualizacao');
+            
+            const nomeFiltro = filtroNome.value.toLowerCase().trim();
+            const turnoFiltro = filtroTurno.value;
+            const diaFiltro = filtroDia.value;
+
+            // Filtrar alunos
+            let alunosFiltrados = todosAlunos.filter(aluno => {
+                if (nomeFiltro && !aluno.nome.toLowerCase().includes(nomeFiltro)) return false;
+                if (turnoFiltro && aluno.turno !== turnoFiltro) return false;
+                
+                // Filtrar por dia específico (se selecionado)
+                if (diaFiltro) {
+                    const dispDia = aluno.disponibilidade[diaFiltro];
+                    if (!dispDia || (!dispDia.manha && !dispDia.tarde)) return false;
+                }
+                
+                return true;
+            });
+
+            // Ordenar por nome
+            alunosFiltrados.sort((a, b) => a.nome.localeCompare(b.nome));
+
+            // Calcular estatísticas
+            const totalAlunos = alunosFiltrados.length;
+            let totalHoras = 0;
+            let alunosManha = 0;
+            let alunosTarde = 0;
+            
+            const disponibilidadePorDia = {
+                segunda: { manha: 0, tarde: 0, total: 0 },
+                terca: { manha: 0, tarde: 0, total: 0 },
+                quarta: { manha: 0, tarde: 0, total: 0 },
+                quinta: { manha: 0, tarde: 0, total: 0 },
+                sexta: { manha: 0, tarde: 0, total: 0 }
+            };
+
+            alunosFiltrados.forEach(aluno => {
+                totalHoras += aluno.horas_semanais || 0;
+                
+                if (aluno.turno === 'manha') alunosManha++;
+                if (aluno.turno === 'tarde') alunosTarde++;
+                
+                if (aluno.disponibilidade) {
+                    Object.entries(aluno.disponibilidade).forEach(([dia, periodos]) => {
+                        if (periodos.manha) {
+                            disponibilidadePorDia[dia].manha++;
+                            disponibilidadePorDia[dia].total++;
+                        }
+                        if (periodos.tarde) {
+                            disponibilidadePorDia[dia].tarde++;
+                            disponibilidadePorDia[dia].total++;
+                        }
+                    });
+                }
+            });
+
+            // Mostrar estatísticas
+            estatisticasDiv.innerHTML = `
+                <div class="estatistica-card">
+                    <div class="numero">${totalAlunos}</div>
+                    <div class="rotulo">Total de Alunos</div>
+                    <div class="subtitulo">${alunosManha} manhã | ${alunosTarde} tarde</div>
+                </div>
+                <div class="estatistica-card">
+                    <div class="numero">${totalHoras.toFixed(1)}h</div>
+                    <div class="rotulo">Horas totais/semana</div>
+                    <div class="subtitulo">Média: ${(totalHoras/totalAlunos || 0).toFixed(1)}h/aluno</div>
+                </div>
+                <div class="estatistica-card">
+                    <div class="numero">${disponibilidadePorDia.segunda.total}</div>
+                    <div class="rotulo">Disponíveis Segunda</div>
+                    <div class="subtitulo">🌅 ${disponibilidadePorDia.segunda.manha} | 🌆 ${disponibilidadePorDia.segunda.tarde}</div>
+                </div>
+                <div class="estatistica-card">
+                    <div class="numero">${disponibilidadePorDia.quarta.total}</div>
+                    <div class="rotulo">Disponíveis Quarta</div>
+                    <div class="subtitulo">🌅 ${disponibilidadePorDia.quarta.manha} | 🌆 ${disponibilidadePorDia.quarta.tarde}</div>
+                </div>
+            `;
+
+            // Construir tabela
+            if (alunosFiltrados.length === 0) {
+                container.innerHTML = `
+                    <div class="sem-dados">
+                        <i class="fas fa-filter"></i>
+                        <h3>Nenhum aluno encontrado</h3>
+                        <p>Tente ajustar os filtros de busca.</p>
+                    </div>
+                `;
+            } else {
+                let html = '<table>';
+                html += '<tr><th>Aluno</th><th>Turno</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Horas</th></tr>';
+
+                alunosFiltrados.forEach(aluno => {
+                    const turnoLabel = aluno.turno === 'manha' ? '<span class="badge-turno badge-manha">🌅 Manhã</span>' : 
+                                      aluno.turno === 'tarde' ? '<span class="badge-turno badge-tarde">🌆 Tarde</span>' : 
+                                      '<span class="badge-turno">❌ Não definido</span>';
+                    
+                    html += `<tr>`;
+                    html += `<td class="aluno-nome">${aluno.nome}</td>`;
+                    html += `<td>${turnoLabel}</td>`;
+
+                    // Dias da semana
+                    ['segunda', 'terca', 'quarta', 'quinta', 'sexta'].forEach(dia => {
+                        const disp = aluno.disponibilidade[dia] || { manha: false, tarde: false };
+                        let icones = [];
+                        if (disp.manha) icones.push('<span class="periodo-icon" title="Manhã">🌅</span>');
+                        if (disp.tarde) icones.push('<span class="periodo-icon" title="Tarde">🌆</span>');
+                        
+                        html += `<td>${icones.join(' ') || '<span class="indisponivel" title="Indisponível">❌</span>'}</td>`;
+                    });
+
+                    html += `<td><strong>${aluno.horas_semanais?.toFixed(1) || 0}h</strong></td>`;
+                    html += `</tr>`;
+                });
+
+                html += '</table>';
+                container.innerHTML = html;
+            }
+
+            // Atualizar data da última atualização
+            if (lastUpdate) {
+                dataAtualizacao.textContent = `Última atualização: ${lastUpdate.toLocaleString('pt-BR')}`;
+            }
+        }
+
+        // Event listeners para filtros
+        filtroNome.addEventListener('input', aplicarFiltros);
+        filtroTurno.addEventListener('change', aplicarFiltros);
+        filtroDia.addEventListener('change', aplicarFiltros);
+        refreshBtn.addEventListener('click', carregarDisponibilidade);
+
+        // Carregar dados iniciais
+        carregarDisponibilidade();
+
+        // Atualizar a cada 30 segundos (opcional)
+        setInterval(carregarDisponibilidade, 30000);
+    </script>
+</body>
+</html>
