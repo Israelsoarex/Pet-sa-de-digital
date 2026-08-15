@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>UBS Mafrense | Acompanhamento Bolsa Família</title>
+
+    <link rel="stylesheet" href="main.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- SheetJS - leitura e criação de XLSX -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header id="header">
+
+        <nav>
+
+            <div class="logo-area">
+                <img src="../imagens/pet_logo.png" alt="Logo PET Saúde">
+            </div>
+
+            <button class="menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+
+        </nav>
+
+    </header>
+
+
+    <!-- =====================================================
+         MENU LATERAL
+    ====================================================== -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <ul>
+
+            <li>
+                <a href="#" id="logoutBtn">
+                    <i class="fas fa-right-from-bracket"></i>
+                    Sair
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+
+    <!-- =====================================================
+         TELA DE LOGIN
+    ====================================================== -->
+
+    <main id="loginScreen" class="screen">
+
+        <div class="login-container">
+
+            <div class="login-icon">
+                <i class="fas fa-user-shield"></i>
+            </div>
+
+            <h1>Acesso restrito</h1>
+
+            <p>
+                UBS Mafrense - PET Saúde Digital
+            </p>
+
+            <form id="loginForm">
+
+                <div class="input-group">
+
+                    <label for="email">
+                        E-mail
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Digite seu e-mail"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label for="password">
+                        Senha
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Digite sua senha"
+                        required
+                    >
+
+                </div>
+
+
+                <button type="submit" class="primary-btn">
+
+                    <i class="fas fa-right-to-bracket"></i>
+
+                    Entrar
+
+                </button>
+
+                <div id="loginMessage" class="message"></div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         APLICAÇÃO
+    ====================================================== -->
+
+    <main id="appScreen" class="screen hidden">
+
+        <div class="container">
+
+            <h1>
+                Acompanhamento Bolsa Família
+            </h1>
+
+
+            <!-- =================================================
+                 IMPORTAR ARQUIVO
+            ================================================== -->
+
+            <section class="section">
+
+                <h2>
+                    <i class="fas fa-file-excel"></i>
+                    1. Importar planilha
+                </h2>
+
+                <p>
+                    Selecione a planilha XLSX contendo as pessoas.
+                </p>
+
+
+                <label class="file-label">
+
+                    <i class="fas fa-upload"></i>
+
+                    Selecionar arquivo XLSX
+
+                    <input
+                        type="file"
+                        id="xlsxInput"
+                        accept=".xlsx,.xls"
+                        hidden
+                    >
+
+                </label>
+
+
+                <div id="fileName" class="file-name">
+                    Nenhum arquivo selecionado
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 CICLO
+            ================================================== -->
+
+            <section class="section">
+
+                <h2>
+                    <i class="fas fa-calendar"></i>
+                    2. Ciclo de acompanhamento
+                </h2>
+
+                <p>
+                    Informe o ciclo ao qual esta planilha pertence.
+                </p>
+
+                <select id="cycleSelect">
+
+                    <option value="2026-1">
+                        2026 - 1º semestre
+                    </option>
+
+                    <option value="2026-2" selected>
+                        2026 - 2º semestre
+                    </option>
+
+                    <option value="2027-1">
+                        2027 - 1º semestre
+                    </option>
+
+                    <option value="2027-2">
+                        2027 - 2º semestre
+                    </option>
+
+                </select>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 RESUMO
+            ================================================== -->
+
+            <section
+                class="section summary-section"
+                id="summarySection"
+                style="display:none;"
+            >
+
+                <h2>
+                    <i class="fas fa-chart-simple"></i>
+                    Resumo
+                </h2>
+
+                <div class="summary-grid">
+
+    <!-- =========================
+         RESUMO GERAL
+    ========================== -->
+
+    <div class="summary-card">
+        <strong id="totalCount">0</strong>
+        <span>Total</span>
+    </div>
+
+    <div class="summary-card">
+        <strong id="evaluatedCount">0</strong>
+        <span>Avaliados</span>
+    </div>
+
+    <div class="summary-card">
+        <strong id="pendingCount">0</strong>
+        <span>Pendentes</span>
+    </div>
+
+    <div class="summary-card green-card">
+        <strong id="greenCount">0</strong>
+        <span>Acompanhadas</span>
+    </div>
+
+    <div class="summary-card red-card">
+        <strong id="redCount">0</strong>
+        <span>Desacompanhadas</span>
+    </div>
+
+    <div class="summary-card purple-card">
+        <strong id="purpleCount">0</strong>
+        <span>Motivo desconhecido</span>
+    </div>
+
+
+    <!-- =========================
+         RESUMO DE HOJE
+    ========================== -->
+
+    <div class="summary-card today-card">
+        <strong id="todayCount">0</strong>
+        <span>Feitas hoje</span>
+    </div>
+
+    <div class="summary-card green-card">
+        <strong id="todayGreenCount">0</strong>
+        <span>Acompanhadas hoje</span>
+    </div>
+
+    <div class="summary-card red-card">
+        <strong id="todayRedCount">0</strong>
+        <span>Desacompanhadas hoje</span>
+    </div>
+
+    <div class="summary-card purple-card">
+        <strong id="todayPurpleCount">0</strong>
+        <span>Motivo desconhecido hoje</span>
+    </div>
+
+</div>
+
+
+                <div class="progress-container">
+
+                    <div class="progress-bar">
+
+                        <div
+                            id="progressBar"
+                            class="progress"
+                        ></div>
+
+                    </div>
+
+                    <p id="progressText">
+                        0%
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 CIDADÃO ATUAL
+            ================================================== -->
+
+            <section
+                class="citizen-section"
+                id="citizenSection"
+                style="display:none;"
+            >
+
+                <div class="citizen-header">
+
+                    <span id="positionText">
+                        Pessoa 1 de 100
+                    </span>
+
+                </div>
+
+
+                <div class="citizen-card">
+
+                    <div class="citizen-icon">
+
+                        <i class="fas fa-user"></i>
+
+                    </div>
+
+
+                    <div class="citizen-info">
+
+                        <span class="field-title">
+                            NOME
+                        </span>
+
+                        <strong id="citizenName">
+                            -
+                        </strong>
+
+
+                        <button
+                            class="copy-btn"
+                            id="copyNameBtn"
+                        >
+
+                            <i class="fas fa-copy"></i>
+
+                            Copiar nome
+
+                        </button>
+
+
+                        <span class="field-title nis-title">
+                            NIS
+                        </span>
+
+                        <strong id="citizenNis">
+                            -
+                        </strong>
+
+
+                        <button
+                            class="copy-btn"
+                            id="copyNisBtn"
+                        >
+
+                            <i class="fas fa-copy"></i>
+
+                            Copiar NIS
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     BOTÃO CONSULTA
+                ================================================== -->
+
+                <div class="consult-section">
+
+                    <h2>
+                        <i class="fas fa-magnifying-glass"></i>
+
+                        Consulta
+                    </h2>
+
+                    <p>
+                        Use este botão para copiar a mensagem utilizada durante a consulta.
+                    </p>
+
+                    <button
+                        class="consult-btn"
+                        id="copyConsultBtn"
+                    >
+
+                        <i class="fas fa-clipboard"></i>
+
+                        Ver a última consulta
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     RESULTADO
+                ================================================== -->
+
+                <div class="result-section">
+
+                    <h2>
+                        Resultado da avaliação
+                    </h2>
+
+                    <p>
+                        Após verificar o cidadão nos sistemas oficiais,
+                        selecione o resultado:
+                    </p>
+
+
+                    <div class="result-buttons">
+
+                        <button
+                            class="result-btn green"
+                            id="greenBtn"
+                        >
+
+                            <span class="result-icon">
+                                <i class="fas fa-check"></i>
+                            </span>
+
+                            <span>
+                                <strong>Acompanhada</strong>
+                                <small>Registrar acompanhamento</small>
+                            </span>
+
+                        </button>
+
+
+                        <button
+                            class="result-btn red"
+                            id="redBtn"
+                        >
+
+                            <span class="result-icon">
+                                <i class="fas fa-xmark"></i>
+                            </span>
+
+                            <span>
+                                <strong>Desacompanhada</strong>
+                                <small>Não encontrada no período</small>
+                            </span>
+
+                        </button>
+
+
+                        <button
+                            class="result-btn purple"
+                            id="purpleBtn"
+                        >
+
+                            <span class="result-icon">
+                                <i class="fas fa-question"></i>
+                            </span>
+
+                            <span>
+                                <strong>Motivo desconhecido</strong>
+                                <small>Problema ou situação diferente</small>
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     MENSAGEM
+                ================================================== -->
+
+                <div id="actionMessage" class="action-message"></div>
+
+
+                <!-- =================================================
+                     PRÓXIMO
+                ================================================== -->
+
+                <div class="next-section">
+
+                    <span>
+                        O próximo cidadão aparecerá automaticamente.
+                    </span>
+
+                    <button
+                        id="nextBtn"
+                        class="next-btn"
+                        style="display:none;"
+                    >
+                        Próximo
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 FINALIZAÇÃO
+            ================================================== -->
+
+            <section
+                id="finishedSection"
+                class="finished-section"
+                style="display:none;"
+            >
+
+                <div class="finished-icon">
+                    <i class="fas fa-circle-check"></i>
+                </div>
+
+                <h2>
+                    Avaliação concluída!
+                </h2>
+
+                <p>
+                    Todas as pessoas pendentes desta planilha foram processadas.
+                </p>
+
+
+                <button
+                    id="exportBtn"
+                    class="primary-btn"
+                >
+
+                    <i class="fas fa-file-export"></i>
+
+                    Baixar XLSX colorido
+
+                </button>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         FIREBASE
+    ====================================================== -->
+
+    <script type="module" src="main.js"></script>
+
+</body>
+
+</html>

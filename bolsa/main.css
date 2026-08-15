@@ -1,0 +1,1232 @@
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+
+body {
+
+    background:
+        linear-gradient(
+            135deg,
+            #021B3A,
+            #043E7D,
+            #0A5EB0
+        );
+
+    background-size: 200% 200%;
+
+    animation:
+        gradientMove 8s ease infinite;
+
+    min-height: 100vh;
+
+    color: #222;
+
+}
+
+
+@keyframes gradientMove {
+
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    height: 3.8rem;
+
+    background: white;
+
+    box-shadow:
+        0 5px 20px rgba(0,0,0,.15);
+
+    z-index: 1000;
+
+}
+
+
+nav {
+
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 1rem;
+
+}
+
+
+.logo-area {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    color: #043E7D;
+
+    font-weight: 700;
+
+}
+
+
+.logo-area img {
+
+    height: 2.5rem;
+
+    max-width: 120px;
+
+    object-fit: contain;
+
+}
+
+
+.menu-btn {
+
+    background: none;
+
+    border: none;
+
+    font-size: 1.8rem;
+
+    color: #043E7D;
+
+    cursor: pointer;
+
+    width: 3rem;
+
+    height: 3rem;
+
+    transition: .3s;
+
+}
+
+
+.menu-btn:hover {
+
+    color: #0A5EB0;
+
+    transform: scale(1.1);
+
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar {
+
+    position: fixed;
+
+    top: 3.8rem;
+
+    right: -250px;
+
+    width: 250px;
+
+    background: #043E7D;
+
+    padding: 10px;
+
+    transition: .3s ease-in-out;
+
+    z-index: 999;
+
+    border-radius:
+        0 0 0 10px;
+
+}
+
+
+.sidebar.active {
+
+    right: 0;
+
+}
+
+
+.sidebar ul {
+
+    list-style: none;
+
+}
+
+
+.sidebar li {
+
+    margin-bottom: 5px;
+
+}
+
+
+.sidebar a {
+
+    color: white;
+
+    text-decoration: none;
+
+    font-weight: 600;
+
+    display: block;
+
+    padding: 13px;
+
+    border-radius: 8px;
+
+    transition: .3s;
+
+}
+
+
+.sidebar a:hover {
+
+    background: #0A5EB0;
+
+}
+
+
+/* =========================================================
+   TELAS
+========================================================= */
+
+.screen {
+
+    min-height: 100vh;
+
+    padding:
+        6rem 20px 40px;
+
+}
+
+
+.hidden {
+
+    display: none !important;
+
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+.login-container {
+
+    background: white;
+
+    width: 100%;
+
+    max-width: 430px;
+
+    margin:
+        5rem auto 0;
+
+    padding: 40px;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 25px 60px rgba(0,0,0,.25);
+
+    text-align: center;
+
+}
+
+
+.login-icon {
+
+    width: 75px;
+
+    height: 75px;
+
+    margin: 0 auto 20px;
+
+    border-radius: 50%;
+
+    background: #eaf3ff;
+
+    color: #043E7D;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 2rem;
+
+}
+
+
+.login-container h1 {
+
+    color: #043E7D;
+
+    margin-bottom: 8px;
+
+}
+
+
+.login-container > p {
+
+    color: #666;
+
+    margin-bottom: 30px;
+
+}
+
+
+.input-group {
+
+    text-align: left;
+
+    margin-bottom: 18px;
+
+}
+
+
+.input-group label {
+
+    display: block;
+
+    background: none;
+
+    border: none;
+
+    padding: 0;
+
+    margin-bottom: 7px;
+
+    font-weight: 600;
+
+    color: #333;
+
+}
+
+
+.input-group input,
+select {
+
+    width: 100%;
+
+    padding: 13px;
+
+    border:
+        1px solid #ccd9e8;
+
+    border-radius: 10px;
+
+    outline: none;
+
+    font-size: 1rem;
+
+}
+
+
+.input-group input:focus,
+select:focus {
+
+    border-color: #043E7D;
+
+    box-shadow:
+        0 0 0 3px rgba(4,62,125,.1);
+
+}
+
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.container {
+
+    background: white;
+
+    width: 100%;
+
+    max-width: 1000px;
+
+    margin: 0 auto;
+
+    padding: 40px;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 25px 60px rgba(0,0,0,.25);
+
+}
+
+
+.container > h1 {
+
+    text-align: center;
+
+    color: #043E7D;
+
+    margin-bottom: 30px;
+
+    font-size:
+        clamp(1.5rem,5vw,2rem);
+
+}
+
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.section {
+
+    margin-bottom: 25px;
+
+    padding: 20px;
+
+    border-radius: 15px;
+
+    background: #f5f9ff;
+
+    border:
+        1px solid #d0e2ff;
+
+}
+
+
+.section h2 {
+
+    color: #043E7D;
+
+    margin-bottom: 10px;
+
+    font-size: 1.15rem;
+
+}
+
+
+.section p {
+
+    color: #555;
+
+    margin-bottom: 15px;
+
+}
+
+
+/* =========================================================
+   FILE INPUT
+========================================================= */
+
+.file-label {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    width: 100%;
+
+    padding: 16px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #043E7D,
+            #0A5EB0
+        );
+
+    color: white;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+    transition: .3s;
+
+}
+
+
+.file-label:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 20px rgba(0,0,0,.15);
+
+}
+
+
+.file-name {
+
+    text-align: center;
+
+    margin-top: 12px;
+
+    color: #555;
+
+}
+
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+.summary-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(130px,1fr));
+
+    gap: 10px;
+
+}
+
+
+.summary-card {
+
+    background: white;
+
+    border:
+        1px solid #dbe8ff;
+
+    border-radius: 12px;
+
+    padding: 15px;
+
+    text-align: center;
+
+}
+
+
+.summary-card strong {
+
+    display: block;
+
+    font-size: 1.7rem;
+
+    color: #043E7D;
+
+}
+
+
+.summary-card span {
+
+    font-size: .85rem;
+
+    color: #555;
+
+}
+
+
+.green-card strong {
+
+    color: #198754;
+
+}
+
+
+.red-card strong {
+
+    color: #dc3545;
+
+}
+
+
+.purple-card strong {
+
+    color: #7b2cbf;
+
+}
+
+
+/* =========================================================
+   PROGRESSO
+========================================================= */
+
+.progress-container {
+
+    margin-top: 20px;
+
+}
+
+
+.progress-bar {
+
+    height: 15px;
+
+    background: #e5eaf0;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+}
+
+
+.progress {
+
+    width: 0%;
+
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #043E7D,
+            #0A5EB0
+        );
+
+    transition: width .4s;
+
+}
+
+
+#progressText {
+
+    text-align: center;
+
+    margin-top: 8px;
+
+    font-weight: 600;
+
+}
+
+
+/* =========================================================
+   CIDADÃO
+========================================================= */
+
+.citizen-section {
+
+    margin-top: 30px;
+
+}
+
+
+.citizen-header {
+
+    text-align: center;
+
+    color: #043E7D;
+
+    font-weight: 700;
+
+    margin-bottom: 15px;
+
+}
+
+
+.citizen-card {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 25px;
+
+    padding: 30px;
+
+    background: #f5f9ff;
+
+    border:
+        1px solid #d0e2ff;
+
+    border-radius: 18px;
+
+}
+
+
+.citizen-icon {
+
+    min-width: 80px;
+
+    height: 80px;
+
+    border-radius: 50%;
+
+    background: #043E7D;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 2rem;
+
+}
+
+
+.citizen-info {
+
+    flex: 1;
+
+}
+
+
+.field-title {
+
+    display: block;
+
+    color: #777;
+
+    font-size: .8rem;
+
+    font-weight: 700;
+
+    margin-bottom: 4px;
+
+}
+
+
+.citizen-info strong {
+
+    display: block;
+
+    font-size: 1.25rem;
+
+    color: #043E7D;
+
+    margin-bottom: 10px;
+
+    word-break: break-word;
+
+}
+
+
+.nis-title {
+
+    margin-top: 15px;
+
+}
+
+
+/* =========================================================
+   COPY BUTTON
+========================================================= */
+
+.copy-btn {
+
+    border: none;
+
+    background: #eaf3ff;
+
+    color: #043E7D;
+
+    padding: 9px 13px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+    transition: .2s;
+
+}
+
+
+.copy-btn:hover {
+
+    background: #d5e8ff;
+
+}
+
+
+.copy-btn.copied {
+
+    background: #d1e7dd;
+
+    color: #198754;
+
+}
+
+
+/* =========================================================
+   CONSULTA
+========================================================= */
+
+.consult-section {
+
+    margin-top: 25px;
+
+    padding: 20px;
+
+    border-radius: 15px;
+
+    background: #fff8e8;
+
+    border:
+        1px solid #ffe2a8;
+
+}
+
+
+.consult-section h2 {
+
+    color: #8a5a00;
+
+    margin-bottom: 8px;
+
+}
+
+
+.consult-btn {
+
+    width: 100%;
+
+    padding: 16px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #f0a500;
+
+    color: white;
+
+    font-size: 1rem;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: .3s;
+
+}
+
+
+.consult-btn:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 18px rgba(0,0,0,.15);
+
+}
+
+
+/* =========================================================
+   RESULTADOS
+========================================================= */
+
+.result-section {
+
+    margin-top: 25px;
+
+}
+
+
+.result-section h2 {
+
+    color: #043E7D;
+
+    margin-bottom: 8px;
+
+}
+
+
+.result-buttons {
+
+    display: grid;
+
+    gap: 12px;
+
+    margin-top: 20px;
+
+}
+
+
+.result-btn {
+
+    border: none;
+
+    border-radius: 14px;
+
+    padding: 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    cursor: pointer;
+
+    text-align: left;
+
+    transition: .25s;
+
+}
+
+
+.result-btn:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.15);
+
+}
+
+
+.result-btn strong {
+
+    display: block;
+
+    font-size: 1.05rem;
+
+}
+
+
+.result-btn small {
+
+    display: block;
+
+    margin-top: 4px;
+
+    opacity: .8;
+
+}
+
+
+.result-icon {
+
+    width: 45px;
+
+    height: 45px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 1.2rem;
+
+}
+
+
+.result-btn.green {
+
+    background: #d1e7dd;
+
+    color: #0f5132;
+
+}
+
+
+.result-btn.green .result-icon {
+
+    background: #198754;
+
+    color: white;
+
+}
+
+
+.result-btn.red {
+
+    background: #f8d7da;
+
+    color: #842029;
+
+}
+
+
+.result-btn.red .result-icon {
+
+    background: #dc3545;
+
+    color: white;
+
+}
+
+
+.result-btn.purple {
+
+    background: #eadcf8;
+
+    color: #5a189a;
+
+}
+
+
+.result-btn.purple .result-icon {
+
+    background: #7b2cbf;
+
+    color: white;
+
+}
+
+
+/* =========================================================
+   MENSAGEM
+========================================================= */
+
+.action-message {
+
+    text-align: center;
+
+    margin-top: 20px;
+
+    font-weight: 700;
+
+    min-height: 25px;
+
+}
+
+
+/* =========================================================
+   NEXT
+========================================================= */
+
+.next-section {
+
+    text-align: center;
+
+    margin-top: 25px;
+
+    color: #666;
+
+}
+
+
+.next-btn {
+
+    margin-top: 15px;
+
+    padding: 12px 25px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #043E7D;
+
+    color: white;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+}
+
+
+/* =========================================================
+   FINISHED
+========================================================= */
+
+.finished-section {
+
+    text-align: center;
+
+    padding: 40px;
+
+    background: #f5f9ff;
+
+    border-radius: 15px;
+
+}
+
+
+.finished-icon {
+
+    font-size: 4rem;
+
+    color: #198754;
+
+    margin-bottom: 15px;
+
+}
+
+
+.finished-section h2 {
+
+    color: #043E7D;
+
+    margin-bottom: 10px;
+
+}
+
+
+.finished-section p {
+
+    margin-bottom: 25px;
+
+}
+
+
+/* =========================================================
+   PRIMARY BUTTON
+========================================================= */
+
+.primary-btn {
+
+    width: 100%;
+
+    padding: 15px 20px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #043E7D,
+            #0A5EB0
+        );
+
+    border: none;
+
+    border-radius: 12px;
+
+    color: white;
+
+    font-size: 1rem;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: .3s;
+
+}
+
+
+.primary-btn:hover {
+
+    transform: scale(1.02);
+
+    box-shadow:
+        0 10px 20px rgba(0,0,0,.2);
+
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.message {
+
+    margin-top: 15px;
+
+    font-weight: 600;
+
+    color: #dc3545;
+
+}
+
+
+/* =========================================================
+   RESPONSIVO
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .screen {
+
+        padding:
+            5rem 10px 20px;
+
+    }
+
+
+    .container {
+
+        padding: 20px;
+
+        border-radius: 15px;
+
+    }
+
+
+    .login-container {
+
+        padding: 25px;
+
+    }
+
+
+    .logo-area span {
+
+        display: none;
+
+    }
+
+
+    .citizen-card {
+
+        flex-direction: column;
+
+        text-align: center;
+
+        padding: 25px 15px;
+
+    }
+
+
+    .citizen-info {
+
+        width: 100%;
+
+    }
+
+
+    .copy-btn {
+
+        width: 100%;
+
+    }
+
+
+    .result-btn {
+
+        padding: 15px;
+
+    }
+
+}
