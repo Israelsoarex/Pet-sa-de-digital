@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <title>Dashboard</title>
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- Header -->
+    <div class="header">
+        <h1>📊 Cuidado na Gestação e Puerpério</h1>
+        <div class="subtitle">
+            <span>📍 Teresina - PI</span>
+            <span>📅 Competência: ABR/26</span>
+            <span>🏥 Tipo: eAP / eSF</span>
+            <span>📌 Dado Preliminar - 31/08/2026</span>
+        </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="cards-grid" id="cardsGrid">
+        <div class="card">
+            <div class="number" id="totalEquipes">0</div>
+            <div class="label">Equipes Avaliadas</div>
+        </div>
+        <div class="card green">
+            <div class="number" id="totalGestantes">0</div>
+            <div class="label">Total de Gestantes/Puérperas</div>
+        </div>
+        <div class="card orange">
+            <div class="number" id="mediaBoasPraticas">0</div>
+            <div class="label">Média de Boas Práticas</div>
+        </div>
+        <div class="card purple">
+            <div class="number" id="maiorRazao">0</div>
+            <div class="label">Maior Razão (%)</div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filters">
+        <label for="filterEquipe">🔍 Filtrar por Equipe:</label>
+        <select id="filterEquipe">
+            <option value="todas">Todas as equipes</option>
+        </select>
+        <div class="total-info">
+            <strong id="totalExibido">0</strong> gestantes no filtro atual
+        </div>
+    </div>
+
+    <!-- Gráfico de Barras -->
+    <div class="chart-section">
+        <h3>📈 Razão (Numerador/Denominador) por Equipe</h3>
+        <div class="bar-chart" id="barChart"></div>
+    </div>
+
+    <!-- Tabela -->
+    <div class="table-container">
+        <h3>📋 Detalhamento por Equipe</h3>
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>INE</th>
+                        <th>Equipe</th>
+                        <th>Gestantes</th>
+                        <th>Boas Práticas</th>
+                        <th>Razão</th>
+                        <th>1ª Consulta ≤ 12ª sem</th>
+                        <th>≥ 7 Consultas</th>
+                        <th>≥ 7 PA</th>
+                        <th>≥ 7 Peso/Altura</th>
+                        <th>≥ 3 Visitas ACS</th>
+                        <th>DTPa</th>
+                        <th>Testes 1º Trim</th>
+                        <th>Testes 3º Trim</th>
+                        <th>Consulta Puerpério</th>
+                        <th>Visita ACS Puerpério</th>
+                        <th>Saúde Bucal</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
