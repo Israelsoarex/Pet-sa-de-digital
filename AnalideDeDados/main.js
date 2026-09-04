@@ -5,12 +5,13 @@ const PASTA_DADOS = './dados/';
 
 const ARQUIVOS = {
     gestante: [
-        'gestante_0.xlsx',
-        'gestante_1.xlsx',
-        'gestante_2.xlsx',
-        'gestante_3.xlsx',
-        'gestante_4.xlsx'
+        'dados_gestantes_1.xlsx',
+        'dados_gestantes_2.xlsx',
+        'dados_gestantes_3.xlsx',
+        'dados_gestantes_4.xlsx',
+        'dados_gestantes_5.xlsx'
     ],
+
     infantil: [
         'desenvolvimento infantil 1.xlsx',
         'desenvolvimento infantil 2.xlsx',
@@ -20,10 +21,8 @@ const ARQUIVOS = {
     ]
 };
 
-// Estado global
 let dadosAtuais = [];
 let competenciaAtual = '';
-
 // ============================================================
 // REFERÊNCIAS DOM
 // ============================================================
@@ -33,7 +32,7 @@ const filterEquipe = document.getElementById('filterEquipe');
 const tableBody = document.getElementById('tableBody');
 const barChart = document.getElementById('barChart');
 const totalEquipes = document.getElementById('totalEquipes');
-const totalPacientes = document.getElementById('totalPacientes');
+const totalPacientes = document.getElementById('totalGestantes');
 const mediaBoasPraticas = document.getElementById('mediaBoasPraticas');
 const maiorRazao = document.getElementById('maiorRazao');
 const totalExibido = document.getElementById('totalExibido');
@@ -173,32 +172,73 @@ function mapearDadosInfantil(rows, cabecalho) {
 }
 
 // ============================================================
-// CARREGAR ARQUIVO VIA BLOB URL (MÉTODO ALTERNATIVO)
+// CARREGAR ARQUIVO EXCEL
 // ============================================================
-function carregarArquivoViaBlob(tipo, indice) {
-    return new Promise((resolve, reject) => {
-        const nomeArquivo = ARQUIVOS[tipo][indice];
-        const caminho = PASTA_DADOS + nomeArquivo;
 
-        console.log('Tentando carregar:', caminho);
+async function carregarArquivoViaBlob(tipo, indice) {
 
-        // Tenta com fetch primeiro
-        fetch(caminho)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Arquivo não encontrado: ${nomeArquivo}`);
-                }
-                return response.arrayBuffer();
-            })
-            .then(buffer => {
-                processarArquivo(buffer, tipo, nomeArquivo, resolve, reject);
-            })
-            .catch(error => {
-                // Se falhar, tenta criar um input escondido para carregar
-                console.warn('Fetch falhou, tentando método alternativo...', error);
-                carregarViaInputOculto(tipo, indice, resolve, reject);
+    const nomeArquivo = ARQUIVOS[tipo][indice];
+
+    // Caminhos possíveis
+    const caminhos = [
+        `./dados/${encodeURIComponent(nomeArquivo)}`,
+        `../dados/${encodeURIComponent(nomeArquivo)}`,
+        `/AnalideDeDados/dados/${encodeURIComponent(nomeArquivo)}`,
+        `/dados/${encodeURIComponent(nomeArquivo)}`
+    ];
+
+    console.log('==========================================');
+    console.log('📂 Procurando arquivo:', nomeArquivo);
+
+    let ultimoErro = null;
+
+    for (const caminho of caminhos) {
+
+        try {
+
+            console.log('🔎 Tentando:', caminho);
+
+            const resposta = await fetch(caminho, {
+                method: 'GET',
+                cache: 'no-store'
             });
-    });
+
+            if (!resposta.ok) {
+                console.warn(
+                    `❌ ${resposta.status} - ${resposta.statusText}: ${caminho}`
+                );
+                continue;
+            }
+
+            console.log('✅ Arquivo encontrado:', caminho);
+
+            const buffer = await resposta.arrayBuffer();
+
+            return await new Promise((resolve, reject) => {
+
+                processarArquivo(
+                    buffer,
+                    tipo,
+                    nomeArquivo,
+                    resolve,
+                    reject
+                );
+
+            });
+
+        } catch (erro) {
+
+            console.warn('⚠️ Erro ao tentar:', caminho, erro);
+            ultimoErro = erro;
+
+        }
+    }
+
+    throw new Error(
+        `Não foi possível encontrar o arquivo "${nomeArquivo}".\n\n` +
+        `O servidor tentou os seguintes caminhos:\n` +
+        caminhos.join('\n')
+    );
 }
 
 function processarArquivo(buffer, tipo, nomeArquivo, resolve, reject) {
@@ -246,100 +286,78 @@ function processarArquivo(buffer, tipo, nomeArquivo, resolve, reject) {
     }
 }
 
-function carregarViaInputOculto(tipo, indice, resolve, reject) {
-    // Cria um input file escondido
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.xlsx,.xls';
-    input.style.display = 'none';
-    document.body.appendChild(input);
 
-    input.onchange = function(e) {
-        const file = e.target.files[0];
-        if (!file) {
-            reject('Nenhum arquivo selecionado');
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-            try {
-                const data = new Uint8Array(ev.target.result);
-                processarArquivo(data, tipo, file.name, resolve, reject);
-            } catch (error) {
-                reject(error);
-            }
-        };
-        reader.readAsArrayBuffer(file);
-        document.body.removeChild(input);
-    };
-
-    // Simula o clique para abrir o seletor de arquivos
-    input.click();
-}
 
 // ============================================================
 // CARREGAR TODOS OS ARQUIVOS
 // ============================================================
+// ============================================================
+// CARREGAR ARQUIVOS
+// ============================================================
+
 async function carregarTodosArquivos(tipo) {
+
     loadingDiv.style.display = 'block';
-    loadingDiv.innerHTML = '🔄 Carregando dados... Aguarde.';
+    loadingDiv.innerHTML = '🔄 Procurando arquivos Excel...';
     loadingDiv.style.color = '#2c3e50';
 
+    console.log('==========================================');
+    console.log('📊 Tipo selecionado:', tipo);
+    console.log('📁 Arquivos:', ARQUIVOS[tipo]);
+
     try {
-        const promessas = [];
-        for (let i = 0; i < ARQUIVOS[tipo].length; i++) {
-            promessas.push(carregarArquivoViaBlob(tipo, i));
-        }
 
-        const resultados = await Promise.allSettled(promessas);
-        
-        const falhas = resultados.filter(r => r.status === 'rejected');
-        if (falhas.length === ARQUIVOS[tipo].length) {
-            loadingDiv.innerHTML = `
-                ⚠️ Não foi possível carregar os arquivos automaticamente.<br>
-                <span style="font-size: 13px; opacity: 0.7;">
-                    Clique no botão abaixo e selecione os arquivos da pasta <strong>dados/</strong>
-                </span>
-                <br><br>
-                <input type="file" id="fileInput" multiple accept=".xlsx,.xls" style="padding: 8px; border: 1px solid #dce1e8; border-radius: 8px;">
-                <button onclick="carregarArquivosSelecionados()" style="padding: 8px 20px; background: #2e86c1; color: white; border: none; border-radius: 8px; cursor: pointer; margin-left: 10px;">
-                    📂 Carregar Selecionados
-                </button>
-            `;
-            loadingDiv.style.display = 'block';
-            return;
-        }
-
-        const todosDados = [];
-        let competencia = '';
-        resultados.forEach(result => {
-            if (result.status === 'fulfilled') {
-                todosDados.push(...result.value.dados);
-                if (!competencia && result.value.competencia !== 'N/A') {
-                    competencia = result.value.competencia;
-                }
-            }
-        });
-
-        dadosAtuais = todosDados;
-        competenciaAtual = competencia || 'Mês não identificado';
-        
+        // Cria os meses no filtro
         atualizarMeses(tipo);
+
+        // Começa pelo primeiro mês
         filterMes.value = '0';
-        
-        // Carregar o primeiro mês
-        const resultado = await carregarArquivoViaBlob(tipo, 0);
-        dadosAtuais = resultado.dados;
-        competenciaAtual = resultado.competencia || `Mês 1`;
-        
-        loadingDiv.style.display = 'none';
-        popularFiltros();
-        render('todas');
-        
+
+        await carregarArquivoEspecifico(tipo, 0);
+
+        console.log('✅ Primeiro arquivo carregado com sucesso!');
+
     } catch (error) {
-        console.error('Erro ao carregar dados:', error);
-        loadingDiv.innerHTML = '❌ Erro ao carregar dados. Tente selecionar os arquivos manualmente.';
+
+        console.error('==========================================');
+        console.error('❌ ERRO AO CARREGAR ARQUIVOS');
+        console.error(error);
+        console.error('==========================================');
+
+        loadingDiv.innerHTML = `
+            ❌ Não foi possível encontrar os arquivos Excel.<br><br>
+
+            <strong>Verifique se a estrutura está assim:</strong>
+
+            <pre style="
+                text-align:left;
+                background:#f5f5f5;
+                padding:12px;
+                border-radius:8px;
+                margin-top:10px;
+            ">AnalideDeDados/
+├── main.html
+├── main.js
+├── main.css
+└── dados/
+    ├── gestante_0.xlsx
+    ├── gestante_1.xlsx
+    ├── gestante_2.xlsx
+    ├── gestante_3.xlsx
+    ├── gestante_4.xlsx
+    ├── desenvolvimento infantil 1.xlsx
+    ├── desenvolvimento infantil 2.xlsx
+    ├── desenvolvimento infantil 3.xlsx
+    ├── desenvolvimento infantil 4.xlsx
+    └── desenvolvimento infantil 5.xlsx</pre>
+
+            <br>
+
+            <span style="font-size:13px;">
+                Abra o console (F12) para ver os caminhos testados.
+            </span>
+        `;
+
         loadingDiv.style.color = '#e74c3c';
     }
 }
@@ -442,24 +460,57 @@ function filtrarPorMes() {
     carregarArquivoEspecifico(tipo, mesIndex);
 }
 
+// ============================================================
+// CARREGAR MÊS ESPECÍFICO
+// ============================================================
+
 async function carregarArquivoEspecifico(tipo, indice) {
+
     loadingDiv.style.display = 'block';
-    loadingDiv.textContent = '🔄 Carregando mês selecionado...';
+    loadingDiv.textContent =
+        `🔄 Carregando ${ARQUIVOS[tipo][indice]}...`;
+
     loadingDiv.style.color = '#2c3e50';
-    
+
     try {
+
         const resultado = await carregarArquivoViaBlob(tipo, indice);
+
         dadosAtuais = resultado.dados;
-        competenciaAtual = resultado.competencia || `Mês ${indice + 1}`;
-        
+
+        competenciaAtual =
+            resultado.competencia || `Mês ${indice + 1}`;
+
+        console.log(
+            `✅ ${resultado.arquivo} carregado!`
+        );
+
+        console.log(
+            `📊 Registros encontrados: ${dadosAtuais.length}`
+        );
+
         loadingDiv.style.display = 'none';
-        
+
         popularFiltros();
+
         render('todas');
-        
+
     } catch (error) {
-        console.error('Erro ao carregar mês:', error);
-        loadingDiv.innerHTML = '❌ Erro ao carregar o mês selecionado. Tente usar o botão de carregar arquivos.';
+
+        console.error(
+            `❌ Erro ao carregar ${ARQUIVOS[tipo][indice]}:`,
+            error
+        );
+
+        loadingDiv.innerHTML = `
+            ❌ Erro ao carregar o arquivo.<br>
+            <strong>${ARQUIVOS[tipo][indice]}</strong>
+            <br><br>
+            <span style="font-size:13px;">
+                Veja no console (F12) os caminhos testados.
+            </span>
+        `;
+
         loadingDiv.style.color = '#e74c3c';
     }
 }
