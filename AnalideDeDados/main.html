@@ -11,15 +11,15 @@
 <div class="dashboard">
 
     <!-- Header -->
-    <div class="header">
-        <h1>📊 Cuidado na Gestação e Puerpério</h1>
-        <div class="subtitle">
-            <span>📍 Teresina - PI</span>
-            <span>📅 Competência: ABR/26</span>
-            <span>🏥 Tipo: eAP / eSF</span>
-            <span>📌 Dado Preliminar - 31/08/2026</span>
-        </div>
+<div class="header">
+    <h1>📊 Dashboard - PET Saúde</h1>
+    <div class="subtitle">
+        <span>📍 Teresina - PI</span>
+        <span id="competenciaDisplay">📅 Competência: Carregando...</span>
+        <span>🏥 Tipo: eAP / eSF</span>
+        <span>📌 Dado Preliminar</span>
     </div>
+</div>
 
     <!-- Cards -->
     <div class="cards-grid" id="cardsGrid">
@@ -40,17 +40,37 @@
             <div class="label">Maior Razão (%)</div>
         </div>
     </div>
+<!-- Loading -->
+<div id="loading">Carregando dados...</div>
 
-    <!-- Filtros -->
-    <div class="filters">
-        <label for="filterEquipe">🔍 Filtrar por Equipe:</label>
+   <!-- Filtros -->
+<div class="filters">
+    <div>
+        <label for="filterTipo">📂 Tipo:</label>
+        <select id="filterTipo">
+            <option value="gestante">🤰 Gestante</option>
+            <option value="infantil">👶 Desenvolvimento Infantil</option>
+        </select>
+    </div>
+    
+    <div>
+        <label for="filterMes">📅 Mês:</label>
+        <select id="filterMes">
+            <option value="0">Mês 1</option>
+        </select>
+    </div>
+    
+    <div>
+        <label for="filterEquipe">🔍 Equipe:</label>
         <select id="filterEquipe">
             <option value="todas">Todas as equipes</option>
         </select>
-        <div class="total-info">
-            <strong id="totalExibido">0</strong> gestantes no filtro atual
-        </div>
     </div>
+    
+    <div class="total-info">
+        <strong id="totalExibido">0</strong> pacientes no filtro atual
+    </div>
+</div>
 
     <!-- Gráfico de Barras -->
     <div class="chart-section">

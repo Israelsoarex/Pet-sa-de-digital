@@ -274,3 +274,31 @@
         @media (max-width: 480px) {
             .cards-grid { grid-template-columns: 1fr; }
         }
+
+/* Loading */
+#loading {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+#loading.show {
+    display: block;
+}
+
+/* Competência no header */
+.header .competencia {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-top: 8px;
+    background: rgba(255,255,255,0.15);
+    padding: 4px 14px;
+    border-radius: 20px;
+    display: inline-block;
+}
