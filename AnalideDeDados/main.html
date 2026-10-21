@@ -1,115 +1,102 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <link rel="stylesheet" href="main.css">
-    <title>Dashboard</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#064d87">
+  <title>PET Saúde Digital | Monitoramento de Indicadores</title>
+  <link rel="stylesheet" href="main.css">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script defer src="main.js"></script>
 </head>
 <body>
-<div class="dashboard">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand-mini"><span class="brand-mark">✚</span><span>PET Saúde<br><small>Digital</small></span></div>
+    <nav class="side-nav" aria-label="Navegação principal">
+      <button class="nav-item active" data-section="visao"><span>⌂</span> Visão Geral</button>
+      <button class="nav-item" data-section="equipes"><span>♟</span> Equipes</button>
+      <button class="nav-item" data-section="ubs"><span>▦</span> UBSs</button>
+      <button class="nav-item" data-section="indicadores"><span>▥</span> Indicadores</button>
+      <button class="nav-item" data-section="comparativos"><span>▤</span> Comparativos</button>
+      <button class="nav-item" id="navImportar"><span>＋</span> Adicionar dados</button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="health-icon">＋</div>
+      <p>Saúde mais perto<br>de você</p>
+      <small>UFPI · FMS · SUS</small>
+    </div>
+  </aside>
 
-    <!-- Header -->
-<div class="header">
-    <h1>📊 Dashboard - PET Saúde</h1>
-    <div class="subtitle">
-        <span>📍 Teresina - PI</span>
-        <span id="competenciaDisplay">📅 Competência: Carregando...</span>
-        <span>🏥 Tipo: eAP / eSF</span>
-        <span>📌 Dado Preliminar</span>
-    </div>
-</div>
+  <main class="main-area">
+    <header class="top-header">
+      <button class="mobile-menu" id="mobileMenu" aria-label="Abrir menu">☰</button>
+      <div class="header-title">
+        
+        <div><h1>PET Saúde Digital</h1><p>Monitoramento de Indicadores da Atenção Primária</p></div>
+      </div>
 
-    <!-- Cards -->
-    <div class="cards-grid" id="cardsGrid">
-        <div class="card">
-            <div class="number" id="totalEquipes">0</div>
-            <div class="label">Equipes Avaliadas</div>
-        </div>
-        <div class="card green">
-            <div class="number" id="totalGestantes">0</div>
-            <div class="label">Total de Gestantes/Puérperas</div>
-        </div>
-        <div class="card orange">
-            <div class="number" id="mediaBoasPraticas">0</div>
-            <div class="label">Média de Boas Práticas</div>
-        </div>
-        <div class="card purple">
-            <div class="number" id="maiorRazao">0</div>
-            <div class="label">Maior Razão (%)</div>
-        </div>
-    </div>
-<!-- Loading -->
-<div id="loading">Carregando dados...</div>
+      <div class="header-meta"><span class="location-pin">●</span> Teresina - PI</div>
+      <div class="institution-logos" aria-label="Instituições parceiras">
+        <img class="pet-header-logo" src="img/pet_logo.png" alt="Logo PET Saúde Digital">
+        <img src="img/Logo_SUS.svg" alt="Sistema Único de Saúde - SUS"><img src="img/saude-da-familia-seeklogo.png" alt="Saúde da Família"><img src="img/fms-pi-fundacao-municipal-de-saude-de-teresina.png" alt="Fundação Municipal de Saúde de Teresina">
+      </div>
+    </header>
 
-   <!-- Filtros -->
-<div class="filters">
-    <div>
-        <label for="filterTipo">📂 Tipo:</label>
-        <select id="filterTipo">
-            <option value="gestante">🤰 Gestante</option>
-            <option value="infantil">👶 Desenvolvimento Infantil</option>
-        </select>
-    </div>
-    
-    <div>
-        <label for="filterMes">📅 Mês:</label>
-        <select id="filterMes">
-            <option value="0">Mês 1</option>
-        </select>
-    </div>
-    
-    <div>
-        <label for="filterEquipe">🔍 Equipe:</label>
-        <select id="filterEquipe">
-            <option value="todas">Todas as equipes</option>
-        </select>
-    </div>
-    
-    <div class="total-info">
-        <strong id="totalExibido">0</strong> pacientes no filtro atual
-    </div>
-</div>
+    <section class="content" id="visao">
+      <div class="section-heading"><div><p class="eyebrow">PAINEL DE MONITORAMENTO</p><h2>Visão geral dos indicadores</h2></div><span class="data-status" id="dataStatus"><i></i> Aguardando dados</span></div>
 
-    <!-- Gráfico de Barras -->
-    <div class="chart-section">
-        <h3>📈 Razão (Numerador/Denominador) por Equipe</h3>
-        <div class="bar-chart" id="barChart"></div>
-    </div>
+      <section class="filters panel">
+        <label>Tipo de indicador
+          <select id="filterTipo"><option value="gestante">Gestantes/Puérperas</option><option value="infantil">Desenvolvimento infantil</option></select>
+        </label>
+        <label>UBS
+          <select id="filterUBS"><option value="todas">Todas as UBSs</option></select>
+        </label>
+        <label>Equipe
+          <select id="filterEquipe"><option value="todas">Todas as equipes</option></select>
+        </label>
+        <label>Período
+          <select id="filterMes"><option value="todos">Todas as competências</option></select>
+        </label>
+        <button class="btn-primary" id="btnImportar">＋ Adicionar dados</button>
+        <input type="file" id="fileInput" accept=".xlsx,.xls" multiple hidden>
+      </section>
 
-    <!-- Tabela -->
-    <div class="table-container">
-        <h3>📋 Detalhamento por Equipe</h3>
-        <div class="table-scroll">
-            <table>
-                <thead>
-                    <tr>
-                        <th>INE</th>
-                        <th>Equipe</th>
-                        <th>Gestantes</th>
-                        <th>Boas Práticas</th>
-                        <th>Razão</th>
-                        <th>1ª Consulta ≤ 12ª sem</th>
-                        <th>≥ 7 Consultas</th>
-                        <th>≥ 7 PA</th>
-                        <th>≥ 7 Peso/Altura</th>
-                        <th>≥ 3 Visitas ACS</th>
-                        <th>DTPa</th>
-                        <th>Testes 1º Trim</th>
-                        <th>Testes 3º Trim</th>
-                        <th>Consulta Puerpério</th>
-                        <th>Visita ACS Puerpério</th>
-                        <th>Saúde Bucal</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                </tbody>
-            </table>
-        </div>
-    </div>
+      <div class="kpi-grid">
+        <article class="kpi-card"><div class="kpi-icon blue">♟</div><div><strong id="totalEquipes">—</strong><span>Equipes avaliadas</span><small id="kpiEquipesFoot">Equipes únicas</small></div></article>
+        <article class="kpi-card"><div class="kpi-icon green">♙</div><div><strong id="totalGestantes">—</strong><span id="patientLabel">Total de gestantes/puérperas</span><small>Conforme planilhas carregadas</small></div></article>
+        <article class="kpi-card"><div class="kpi-icon orange">▤</div><div><strong id="mediaBoasPraticas">—</strong><span>Média de boas práticas</span><small>Valor médio dos registros filtrados</small></div></article>
+        <article class="kpi-card"><div class="kpi-icon purple">▥</div><div><strong id="maiorRazao">—</strong><span>Maior razão registrada</span><small>Entre as equipes filtradas</small></div></article>
+        <article class="kpi-card"><div class="kpi-icon red">!</div><div><strong id="zeroCount">—</strong><span>Registros com valor zero</span><small>Razão igual a zero</small></div></article>
+      </div>
 
-</div>
-<script src="main.js"></script>
+      <div class="charts-grid">
+        <article class="panel chart-panel chart-wide" id="section-evolucao"><div class="panel-heading"><div><span class="heading-icon">♧</span><div><h3>Evolução da razão por equipe</h3><p>Comparação entre competências disponíveis</p></div></div><div class="period-tabs" id="chartPeriod"><button class="selected" data-period="mensal">Mensal</button><button data-period="trimestral">Trimestral</button><button data-period="semestral">Semestral</button></div></div><div class="chart-wrap"><canvas id="evolutionChart" aria-label="Gráfico de evolução da razão por equipe"></canvas></div></article>
+        <article class="panel chart-panel" id="section-comparativos"><div class="panel-heading"><div><span class="heading-icon">▥</span><div><h3>Comparativo entre equipes</h3><p>Razão na competência selecionada</p></div></div></div><div class="chart-wrap"><canvas id="comparisonChart" aria-label="Comparativo de equipes"></canvas></div></article>
+        <article class="panel chart-panel" id="section-volume"><div class="panel-heading"><div><span class="heading-icon">♟</span><div><h3>Quantidade por equipe</h3><p>Pacientes/usuários registrados</p></div></div></div><div class="chart-wrap"><canvas id="volumeChart" aria-label="Quantidade por equipe"></canvas></div></article>
+        <article class="panel chart-panel" id="section-distribuicao"><div class="panel-heading"><div><span class="heading-icon">⌁</span><div><h3>Distribuição da razão</h3><p>Faixas de acompanhamento</p></div></div><div class="legend-pills"><span class="good">≥ 40%</span><span class="attention">20–39,99%</span><span class="critical">&lt; 20%</span></div></div><div id="distributionList" class="distribution-list"><p class="empty-state">Carregue os arquivos Excel para visualizar os resultados.</p></div></article>
+      </div>
+
+      <section class="panel table-panel" id="section-equipes">
+        <div class="table-heading"><div><span class="heading-icon">▤</span><div><h3>Detalhamento por equipe e indicador</h3><p id="tableSubtitle">Registros da competência e dos filtros selecionados</p></div></div><div class="table-actions"><input id="searchTable" type="search" placeholder="⌕  Buscar equipe ou UBS..."><button class="btn-outline" id="exportCsv">⇩ Exportar CSV</button><button class="btn-outline" id="toggleColumns">▥ Colunas</button></div></div>
+        <div id="columnChooser" class="column-chooser" hidden></div>
+        <div class="table-scroll"><table id="dataTable"><thead id="tableHead"></thead><tbody id="tableBody"><tr><td colspan="8" class="empty-state">Carregando dados das planilhas...</td></tr></tbody></table></div>
+        <div class="table-footer"><span id="totalExibido">0 registros</span><span>Os dados devem ser validados com as planilhas de origem.</span></div>
+      </section>
+      <footer class="page-footer"><span>PET Saúde Digital · Teresina - PI</span><span>Monitoramento de indicadores · Dados preliminares</span></footer>
+    </section>
+
+    <section class="content secondary-section" id="equipes" hidden><div class="section-heading"><div><p class="eyebrow">CADASTRO E MONITORAMENTO</p><h2>Equipes</h2><p class="muted">As equipes abaixo são identificadas a partir das planilhas importadas.</p></div></div><div class="panel simple-section" id="teamsSummary"></div></section>
+    <section class="content secondary-section" id="ubs" hidden><div class="section-heading"><div><p class="eyebrow">UNIDADES DE SAÚDE</p><h2>UBSs</h2><p class="muted">Unidades encontradas nos arquivos importados.</p></div></div><div class="panel simple-section" id="ubsSummary"></div></section>
+    <section class="content secondary-section" id="indicadores" hidden><div class="section-heading"><div><p class="eyebrow">DICIONÁRIO DE DADOS</p><h2>Indicadores</h2><p class="muted">Os indicadores apresentados são os campos identificados nas planilhas de origem.</p></div></div><div class="panel simple-section" id="indicatorsSummary"></div></section>
+    <section class="content secondary-section" id="comparativos" hidden>
+      <div class="section-heading"><div><p class="eyebrow">ANÁLISE COMPARATIVA</p><h2>Comparativos entre equipes</h2><p class="muted">Comparação das razões e acompanhamento da evolução das equipes, a partir das planilhas carregadas.</p></div></div>
+      <div class="panel compare-toolbar"><label>Indicador <select id="compareTipo"><option value="gestante">Gestantes/Puérperas</option><option value="infantil">Desenvolvimento infantil</option></select></label><label>Competência <select id="compareMes"><option value="todos">Última disponível</option></select></label></div>
+      <div class="charts-grid"><article class="panel chart-panel"><div class="panel-heading"><div><span class="heading-icon">▥</span><h3>Razão por equipe</h3></div></div><div class="chart-wrap"><canvas id="compareBars"></canvas></div></article><article class="panel chart-panel"><div class="panel-heading"><div><span class="heading-icon">⌁</span><h3>Evolução por competência</h3></div></div><div class="chart-wrap"><canvas id="compareLines"></canvas></div></article></div>
+      <section class="panel table-panel"><div class="table-heading"><div><span class="heading-icon">▤</span><h3>Classificação das equipes</h3></div></div><div class="table-scroll"><table><thead><tr><th>Equipe</th><th>UBS</th><th>Competência</th><th>Razão</th><th>Faixa visual</th></tr></thead><tbody id="compareBody"><tr><td colspan="5" class="empty-state">Aguardando dados.</td></tr></tbody></table></div></section>
+    </section>
+  </main>
+  <div class="toast" id="toast" role="status"></div>
 </body>
 </html>
