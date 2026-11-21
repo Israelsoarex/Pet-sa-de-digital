@@ -12,9 +12,10 @@ let todosDados = [], dadosAtuais = [], charts = {}, periodoGrafico = 'mensal', c
 const $ = id => document.getElementById(id);
 const normalizar = v => String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim().toUpperCase();
 function numero(v) {
-  if (typeof v === 'number') return Number.isFinite(v) ? v : 0;
-  const s = String(v ?? '').trim().replace(/\s/g,'').replace('%','').replace(/\.(?=\d{3}(\D|$))/g,'').replace(',','.');
-  const n = Number(s); return Number.isFinite(n) ? n : 0;
+  if (v === null || v === undefined || String(v).trim() === '') return null;
+  if (typeof v === 'number') return Number.isFinite(v) ? v : null;
+  const s = String(v).trim().replace(/\s/g,'').replace('%','').replace(/\.(?=\d{3}(\D|$))/g,'').replace(',','.');
+  const n = Number(s); return Number.isFinite(n) ? n : null;
 }
 function encontrarColuna(headers, termos) {
   const list = Array.isArray(termos) ? termos : [termos];
@@ -30,12 +31,19 @@ function primeiroValor(row, headers, termos) {
 function extrairCompetencia(rows, nomeArquivo) {
   for (const row of rows.slice(0,30)) {
     const text = (row || []).map(x => String(x ?? '')).join(' ');
-    const m = text.match(/Compet[eê]ncia(?:\s+selecionada)?\s*:\s*([0-9]{4}[-/][0-9]{1,2}|[0-9]{1,2}[-/][0-9]{4}|[A-Za-zçÇ]+\/?\s*\d{2,4})/i);
+    const m = text.match(/Compet[eê]ncia(?:\s+selecionada)?\s*:\s*([0-9]{4}[-/]?[0-9]{1,2}|[0-9]{1,2}[-/][0-9]{4}|[A-Za-zçÇ]+\/?\s*\d{2,4})/i);
     if (m) return m[1].trim();
   }
   const m = nomeArquivo.match(/(\d+)(?=\.xlsx$)/i);
   return m ? `Competência ${m[1]}` : nomeArquivo.replace(/\.xlsx$/i,'');
 }
+function chaveCompetencia(valor) {
+  const s=String(valor||'').trim(); let m=s.match(/^(\d{4})[-/](\d{1,2})$/);
+  if(m)return Number(m[1])*100+Number(m[2]);
+  m=s.match(/^(\d{1,2})[-/](\d{4})$/); if(m)return Number(m[2])*100+Number(m[1]);
+  m=s.match(/(\d+)$/); return m?Number(m[1]):0;
+}
+function ordenarCompetencias(lista){return [...new Set(lista.filter(Boolean))].sort((a,b)=>chaveCompetencia(a)-chaveCompetencia(b)||String(a).localeCompare(String(b),'pt-BR'));}
 function encontrarCabecalho(rows) {
   for (let i=0; i<Math.min(rows.length,45); i++) {
     const row = rows[i] || [];
@@ -127,7 +135,7 @@ function atualizarFiltros() {
   const teamVal = team.value, ubsVal = ubs.value, mesVal = mes.value;
   const teams = [...new Set(todosDados.map(d=>d.equipe).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
   const units = [...new Set(todosDados.map(d=>d.ubs).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
-  const comps = [...new Set(todosDados.map(d=>d.competencia).filter(Boolean))];
+  const comps = ordenarCompetencias(todosDados.map(d=>d.competencia));
   team.innerHTML = '<option value="todas">Todas as equipes</option>'+teams.map(x=>`<option value="${escapeAttr(x)}">${escapeHtml(x)}</option>`).join('');
   ubs.innerHTML = '<option value="todas">Todas as UBSs</option>'+units.map(x=>`<option value="${escapeAttr(x)}">${escapeHtml(x)}</option>`).join('');
   mes.innerHTML = '<option value="todos">Todas as competências</option>'+comps.map(x=>`<option value="${escapeAttr(x)}">${escapeHtml(x)}</option>`).join('');
@@ -139,22 +147,36 @@ function filtrarDados() {
   const tipo=$('filterTipo').value, team=$('filterEquipe').value, ubs=$('filterUBS').value, mes=$('filterMes').value;
   return todosDados.filter(d=>d.tipo===tipo&&(team==='todas'||d.equipe===team)&&(ubs==='todas'||d.ubs===ubs)&&(mes==='todos'||d.competencia===mes));
 }
-function formatarPct(v){return `${Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}%`;}
+function formatarPct(v){return v===null||v===undefined||!Number.isFinite(Number(v))?'—':`${Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}%`;}
 function formatarNumero(v){return Number(v||0).toLocaleString('pt-BR',{maximumFractionDigits:2});}
 function badgeClass(v){return v>=40?'ratio-good':v>=20?'ratio-attention':'ratio-critical';}
+function atualizarQualidadeDados(){
+  const rows=dadosAtuais, numericKeys=columnsForType().map(([key])=>key).filter(k=>!['ine','ubs','equipe'].includes(k));
+  const missing=rows.reduce((sum,d)=>sum+numericKeys.filter(k=>d[k]===null||d[k]===undefined).length,0);
+  const keys=rows.map(d=>[d.tipo,d.competencia,d.ine||normalizar(d.equipe),d.arquivo].join('|'));
+  const duplicates=keys.length-new Set(keys).size;
+  $('validRecords').textContent=rows.length.toLocaleString('pt-BR');
+  $('missingRecords').textContent=missing.toLocaleString('pt-BR');
+  $('zeroRecords').textContent=rows.filter(d=>d.razao===0).length.toLocaleString('pt-BR');
+  $('duplicateRecords').textContent=duplicates.toLocaleString('pt-BR');
+  $('qualitySummary').textContent=rows.length?'Verificação concluída':'Sem registros';
+  $('qualityDetails').textContent=rows.length?`${missing} campo(s) numérico(s) ausente(s) em ${rows.length} registro(s). Duplicidade é sinalizada por tipo, competência e INE/equipe dentro do mesmo arquivo.`:'Ajuste os filtros ou carregue uma planilha para analisar a qualidade.';
+}
 function atualizarTela() {
   dadosAtuais=filtrarDados();
   const teams=[...new Set(dadosAtuais.map(d=>d.equipe))];
   $('totalEquipes').textContent=teams.length.toLocaleString('pt-BR');
-  const patientKey=$('filterTipo').value==='gestante'?'total_pacientes':'total_pacientes';
-  const patientTotal=dadosAtuais.reduce((s,d)=>s+(d[patientKey]||0),0);
+  const patientTotal=dadosAtuais.reduce((s,d)=>s+(d.total_pacientes??0),0);
   $('totalGestantes').textContent=formatarNumero(patientTotal);
   $('patientLabel').textContent=$('filterTipo').value==='gestante'?'Total de gestantes/puérperas':'Total de crianças';
-  $('mediaBoasPraticas').textContent=dadosAtuais.length?formatarNumero(dadosAtuais.reduce((s,d)=>s+(d.boas_praticas||0),0)/dadosAtuais.length):'—';
-  $('maiorRazao').textContent=dadosAtuais.length?formatarPct(Math.max(...dadosAtuais.map(d=>d.razao||0))):'—';
-  $('zeroCount').textContent=dadosAtuais.filter(d=>(d.razao||0)===0).length.toLocaleString('pt-BR');
+  const boas=dadosAtuais.map(d=>d.boas_praticas).filter(Number.isFinite);
+  $('mediaBoasPraticas').textContent=boas.length?formatarNumero(boas.reduce((s,v)=>s+v,0)/boas.length):'—';
+  const razoes=dadosAtuais.map(d=>d.razao).filter(Number.isFinite);
+  $('maiorRazao').textContent=razoes.length?formatarPct(Math.max(...razoes)):'—';
+  $('zeroCount').textContent=dadosAtuais.filter(d=>d.razao===0).length.toLocaleString('pt-BR');
   $('totalExibido').textContent=`${dadosAtuais.length} registro(s)`;
   $('tableSubtitle').textContent=$('filterMes').value==='todos'?'Todas as competências selecionadas':'Competência: '+$('filterMes').value;
+  atualizarQualidadeDados();
   renderTable(); renderCharts(); renderSummaries();
 }
 function columnsForType() {
@@ -173,7 +195,7 @@ function renderTable() {
   const rows=dadosAtuais.filter(d=>normalizar(d.equipe+' '+d.ubs+' '+d.ine).includes(query));
   if(!rows.length){$('tableBody').innerHTML=`<tr><td colspan="${visible.length||1}" class="empty-state">Nenhum registro corresponde aos filtros selecionados.</td></tr>`;return;}
   $('tableBody').innerHTML=rows.map(d=>'<tr>'+visible.map(([key])=>{
-    const val=d[key]??0;
+    const val=d[key]??null;
     if(key==='razao') return `<td><span class="ratio-badge ${badgeClass(Number(val))}">${formatarPct(val)}</span></td>`;
     if(key==='equipe') return `<td><b>${escapeHtml(val)}</b></td>`;
     if(typeof val==='number'&&val===0) return `<td class="zero-cell">0</td>`;
@@ -186,34 +208,29 @@ function chartBaseOptions(yLabel='Razão (%)') {
 }
 function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
 function renderCharts() {
+  const tipoAtual=$('filterTipo').value;
+  const escopo=todosDados.filter(d=>d.tipo===tipoAtual && ($('filterEquipe').value==='todas'||d.equipe===$('filterEquipe').value) && ($('filterUBS').value==='todas'||d.ubs===$('filterUBS').value));
   const byTeam=new Map();
-  for(const d of todosDados.filter(d=>d.tipo===$('filterTipo').value)) {
-    if($('filterEquipe').value!=='todas'&&d.equipe!==$('filterEquipe').value) continue;
-    if($('filterUBS').value!=='todas'&&d.ubs!==$('filterUBS').value) continue;
-    if(!byTeam.has(d.equipe)) byTeam.set(d.equipe,new Map());
-    byTeam.get(d.equipe).set(d.competencia,d);
-  }
-  const comps=[...new Set(todosDados.filter(d=>d.tipo===$('filterTipo').value).map(d=>d.competencia))];
+  for(const d of escopo){if(!byTeam.has(d.equipe))byTeam.set(d.equipe,new Map());byTeam.get(d.equipe).set(d.competencia,d);}
+  const comps=ordenarCompetencias(escopo.map(d=>d.competencia));
   const sortedTeams=[...byTeam.keys()].sort((a,b)=>a.localeCompare(b,'pt-BR'));
   let labels=comps;
-  if(periodoGrafico==='trimestral') labels=comps.filter((_,i)=>i%3===2);
-  if(periodoGrafico==='semestral') labels=comps.filter((_,i)=>i%6===5);
-  const lineSets=sortedTeams.map((team,i)=>({label:team,data:labels.map(c=>byTeam.get(team).get(c)?.razao??null),borderColor:CORES[i%CORES.length],backgroundColor:CORES[i%CORES.length],tension:.3,spanGaps:true,pointRadius:3,borderWidth:2}));
+  if(periodoGrafico==='trimestral') labels=comps.filter((_,i)=>(i+1)%3===0);
+  if(periodoGrafico==='semestral') labels=comps.filter((_,i)=>(i+1)%6===0);
+  const lineSets=sortedTeams.map((team,i)=>({label:team,data:labels.map(c=>byTeam.get(team).get(c)?.razao??null),borderColor:CORES[i%CORES.length],backgroundColor:CORES[i%CORES.length],tension:.3,spanGaps:false,pointRadius:3,borderWidth:2}));
   destroyChart('evolutionChart');
-  charts.evolutionChart=new Chart($('evolutionChart'),{type:'line',data:{labels,datasets:lineSets},options:{...chartBaseOptions(),plugins:{...chartBaseOptions().plugins,legend:{position:'bottom',labels:{boxWidth:8,usePointStyle:true,font:{size:9}}}}}});
-  const comparison=$('filterMes').value==='todos'?(comps[comps.length-1]):$('filterMes').value;
+  charts.evolutionChart=new Chart($('evolutionChart'),{type:'line',data:{labels,datasets:lineSets},options:chartBaseOptions()});
+  const comparison=$('filterMes').value==='todos'?comps[comps.length-1]:$('filterMes').value;
   const latest=sortedTeams.map(t=>({team:t,d:byTeam.get(t).get(comparison)})).filter(x=>x.d);
   destroyChart('comparisonChart');
-  charts.comparisonChart=new Chart($('comparisonChart'),{type:'bar',data:{labels:latest.map(x=>x.team),datasets:[{label:'Razão (%)',data:latest.map(x=>x.d.razao),backgroundColor:latest.map((x,i)=>CORES[i%CORES.length]),borderRadius:4,maxBarThickness:48}]},options:{...chartBaseOptions(),plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>formatarPct(c.parsed.y)}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},maxRotation:30}},y:{beginAtZero:true,grid:{color:'#eaf0f5'},ticks:{font:{size:9},callback:v=>v+'%'}}}}});
-  const currentTeamData=latest;
+  charts.comparisonChart=new Chart($('comparisonChart'),{type:'bar',data:{labels:latest.map(x=>x.team),datasets:[{label:'Razão (%)',data:latest.map(x=>x.d.razao),backgroundColor:latest.map((x,i)=>CORES[i%CORES.length]),borderRadius:4,maxBarThickness:48}]},options:chartBaseOptions()});
   destroyChart('volumeChart');
-  const volumeKey='total_pacientes';
-  charts.volumeChart=new Chart($('volumeChart'),{type:'bar',data:{labels:currentTeamData.map(x=>x.team),datasets:[{label:'Quantidade',data:currentTeamData.map(x=>x.d[volumeKey]||0),backgroundColor:currentTeamData.map((x,i)=>CORES[i%CORES.length]),borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},maxRotation:30}},y:{beginAtZero:true,grid:{color:'#eaf0f5'},ticks:{font:{size:9}}}}}});
+  charts.volumeChart=new Chart($('volumeChart'),{type:'bar',data:{labels:latest.map(x=>x.team),datasets:[{label:'Quantidade',data:latest.map(x=>x.d.total_pacientes??null),backgroundColor:latest.map((x,i)=>CORES[i%CORES.length]),borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{beginAtZero:true}}}});
   const dist=$('distributionList');
   if(!latest.length){dist.innerHTML='<p class="empty-state">Sem dados para os filtros selecionados.</p>';return;}
-  dist.innerHTML=latest.sort((a,b)=>(b.d.razao||0)-(a.d.razao||0)).map(({team,d})=>{
+  dist.innerHTML=latest.sort((a,b)=>(b.d.razao??-Infinity)-(a.d.razao??-Infinity)).map(({team,d})=>{
     const val=Number(d.razao)||0, color=val>=40?'#22a363':val>=20?'#efb83e':'#e4525b';
-    return `<div class="distribution-row"><div class="distribution-name">${escapeHtml(team)}</div><div class="distribution-track"><div class="distribution-fill" style="width:${Math.max(0,Math.min(100,val))}%;background:${color}"></div></div><div class="distribution-value">${formatarPct(val)}</div></div>`;
+    return `<div class="distribution-row"><div class="distribution-name">${escapeHtml(team)}</div><div class="distribution-track"><div class="distribution-fill" style="width:${Math.max(0,Math.min(100,val))}%;background:${color}"></div></div><div class="distribution-value">${formatarPct(d.razao)}</div></div>`;
   }).join('');
 }
 function renderSummaries() {
@@ -280,7 +297,7 @@ carregarDados();
 /* Página Comparativos: independente dos gráficos da Visão Geral. */
 function atualizarCompetenciasComparativas(){
   const tipo=$('compareTipo').value;
-  const comps=[...new Set(todosDados.filter(d=>d.tipo===tipo).map(d=>d.competencia))];
+  const comps=ordenarCompetencias(todosDados.filter(d=>d.tipo===tipo).map(d=>d.competencia));
   const anterior=$('compareMes').value;
   $('compareMes').innerHTML='<option value="todos">Última disponível</option>'+comps.map(c=>`<option value="${escapeAttr(c)}">${escapeHtml(c)}</option>`).join('');
   if(comps.includes(anterior)) $('compareMes').value=anterior;
@@ -289,9 +306,9 @@ function renderComparativos(){
   if($('comparativos').hidden)return;
   const tipo=$('compareTipo').value;
   const data=todosDados.filter(d=>d.tipo===tipo);
-  const comps=[...new Set(data.map(d=>d.competencia))];
+  const comps=ordenarCompetencias(data.map(d=>d.competencia));
   const competencia=$('compareMes').value==='todos'?comps[comps.length-1]:$('compareMes').value;
-  const rows=data.filter(d=>d.competencia===competencia).sort((a,b)=>b.razao-a.razao);
+  const rows=data.filter(d=>d.competencia===competencia).sort((a,b)=>(b.razao??-Infinity)-(a.razao??-Infinity));
   $('compareBody').innerHTML=rows.length?rows.map(d=>`<tr><td>${escapeHtml(d.equipe)}</td><td>${escapeHtml(d.ubs)}</td><td>${escapeHtml(d.competencia)}</td><td><span class="ratio-badge ${badgeClass(d.razao)}">${formatarPct(d.razao)}</span></td><td>${d.razao>=40?'≥ 40%':d.razao>=20?'20–39,99%':'< 20%'}</td></tr>`).join(''):'<tr><td colspan="5" class="empty-state">Nenhum registro disponível para a competência selecionada.</td></tr>';
   destroyChart('compareBars');destroyChart('compareLines');
   charts.compareBars=new Chart($('compareBars'),{type:'bar',data:{labels:rows.map(d=>d.equipe),datasets:[{label:'Razão (%)',data:rows.map(d=>d.razao),backgroundColor:rows.map((d,i)=>CORES[i%CORES.length]),borderRadius:4}]},options:{...chartBaseOptions(),plugins:{legend:{display:false}}}});
