@@ -29,3 +29,16 @@
 - As faixas ≥40%, 20–39,99% e <20% são apenas sinalização visual inicial e precisam ser confirmadas com a equipe técnica.
 - Não usar os resultados para decisão assistencial ou avaliação oficial antes de validar as fórmulas e os dados com as planilhas de origem.
 - O carregamento dos gráficos depende de Chart.js e a leitura de Excel depende de SheetJS, ambos incluídos via CDN; é necessária conexão à internet para carregá-los.
+
+
+## Melhorias implementadas nesta revisão
+- Campos numéricos vazios preservados como ausentes (null), sem conversão automática para zero.
+- Competências ordenadas cronologicamente quando identificáveis como ano/mês; competências com número final usam esse número como critério auxiliar.
+- Gráficos da visão geral respeitam filtros de equipe e UBS e compartilham o conjunto cronológico de competências.
+- Painel de qualidade informa registros analisados, campos numéricos ausentes, razões zero e possíveis duplicidades.
+- Médias e maiores razões ignoram valores ausentes; zero permanece um valor válido.
+
+## Limitações mantidas
+- As fórmulas e metas oficiais dos indicadores ainda precisam ser confirmadas com a equipe técnica.
+- As faixas visuais 40%/20% são apenas sinalização provisória, não metas oficiais.
+- A aplicação usa Excel estático e bibliotecas CDN; não possui autenticação, banco de dados, trilha de auditoria ou atualização automática.
